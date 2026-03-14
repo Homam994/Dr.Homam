@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>د. اسم الطبيب — أخصائي تقويم الأسنان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --black:#0A0A0A;
+  --black2:#111111;
+  --black3:#1A1A1A;
+  --black4:#222222;
+  --white:#FAFAF8;
+  --white2:#F0EEE9;
+  --gold:#C9A84C;
+  --gold2:#E8C97A;
+  --gold3:rgba(201,168,76,.15);
+  --gold4:rgba(201,168,76,.06);
+  --text-light:rgba(250,250,248,.85);
+  --text-muted:rgba(250,250,248,.45);
+  --border:rgba(201,168,76,.18);
+  --border2:rgba(250,250,248,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Almarai',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;z-index:99999;background:var(--black);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .6s,visibility .6s}
+#loader.out{opacity:0;visibility:hidden}
+.loader-name{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--white);letter-spacing:6px;opacity:0;animation:fadeUp .8s .2s forwards}
+.loader-line{width:1px;height:0;background:linear-gradient(to bottom,transparent,var(--gold),transparent);animation:growLine 1s .6s forwards}
+.loader-sub{font-size:11px;letter-spacing:4px;color:var(--text-muted);text-transform:uppercase;opacity:0;animation:fadeUp .6s 1s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes growLine{to{height:60px}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:1000;padding:0 5%;transition:all .4s}
+nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:80px}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;gap:2px}
+.nav-logo-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--white);letter-spacing:2px}
+.nav-logo-title{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+.nav-links a{text-decoration:none;font-size:13px;font-weight:300;color:var(--text-muted);letter-spacing:1px;transition:color .3s;position:relative}
+.nav-links a:hover{color:var(--white)}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;right:0;width:0;height:1px;background:var(--gold);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.btn-book-nav{background:transparent!important;border:1px solid var(--gold)!important;color:var(--gold)!important;padding:9px 22px;border-radius:0!important;font-size:12px!important;letter-spacing:2px!important;text-transform:uppercase;transition:all .3s!important}
+.btn-book-nav::after{display:none!important}
+.btn-book-nav:hover{background:var(--gold)!important;color:var(--black)!important}
+
+/* ── HERO ── */
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;background:var(--black)}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 75% 50%,rgba(201,168,76,.07) 0%,transparent 70%)}
+.hero-bg::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+/* زخرفة هندسية */
+.hero-geo{position:absolute;left:5%;top:50%;transform:translateY(-50%);width:500px;height:500px;opacity:.04;pointer-events:none}
+.hero-geo circle{fill:none;stroke:var(--white);stroke-width:.5}
+.hero-media{position:absolute;left:0;top:0;width:48%;height:100%;z-index:1;overflow:hidden}
+.hero-media::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,transparent 60%,var(--black) 100%),linear-gradient(to bottom,var(--black) 0%,transparent 15%,transparent 85%,var(--black) 100%)}
+.hero-media img,.hero-media video,.hero-media iframe{width:100%;height:100%;object-fit:cover;object-position:center top}
+.hero-media-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--black3);color:rgba(255,255,255,.1);font-size:80px}
+.hero-content{position:relative;z-index:2;margin-right:42%;padding:0 5%;max-width:700px}
+.hero-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:28px;opacity:0;animation:fadeUp .7s .3s forwards}
+.hero-eyebrow-line{width:40px;height:1px;background:var(--gold)}
+.hero-eyebrow span{font-size:11px;letter-spacing:4px;color:var(--gold);text-transform:uppercase}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,82px);font-weight:300;line-height:1.1;color:var(--white);margin-bottom:8px;opacity:0;animation:fadeUp .7s .5s forwards}
+.hero-name em{font-style:italic;color:var(--gold2)}
+.hero-title{font-size:13px;letter-spacing:4px;color:var(--text-muted);text-transform:uppercase;margin-bottom:32px;opacity:0;animation:fadeUp .7s .7s forwards}
+.hero-desc{font-size:15px;line-height:2;color:var(--text-muted);font-weight:300;max-width:440px;margin-bottom:48px;opacity:0;animation:fadeUp .7s .9s forwards}
+.hero-ctas{display:flex;gap:16px;align-items:center;flex-wrap:wrap;opacity:0;animation:fadeUp .7s 1.1s forwards}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:var(--black);padding:15px 36px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;font-family:'Almarai',sans-serif;transition:all .3s}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-2px)}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--white);padding:15px 32px;font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:1px solid var(--border2);cursor:pointer;font-family:'Almarai',sans-serif;transition:all .3s}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+.hero-stats{display:flex;gap:40px;margin-top:60px;padding-top:40px;border-top:1px solid var(--border2);opacity:0;animation:fadeUp .7s 1.3s forwards}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--white)}
+.hero-stat-label{font-size:11px;letter-spacing:2px;color:var(--text-muted);margin-top:4px;text-transform:uppercase}
+.scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.4;animation:bounce 2s infinite}
+.scroll-indicator span{font-size:10px;letter-spacing:3px;color:var(--white);text-transform:uppercase}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--white),transparent)}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ── SECTION BASE ── */
+section{padding:110px 5%}
+.container{max-width:1200px;margin:0 auto}
+.sec-label{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.sec-label-line{width:32px;height:1px;background:var(--gold)}
+.sec-label span{font-size:11px;letter-spacing:4px;color:var(--gold);text-transform:uppercase}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);font-weight:300;line-height:1.2;color:var(--white)}
+.sec-title em{font-style:italic;color:var(--gold2)}
+
+/* ── ABOUT ── */
+#about{background:var(--black2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-media{position:relative;height:580px}
+.about-media-inner{width:100%;height:100%;overflow:hidden;position:relative}
+.about-media-inner img,.about-media-inner video,.about-media-inner iframe{width:100%;height:100%;object-fit:cover;object-fit:cover;object-position:center top}
+.about-media-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--black3);color:rgba(255,255,255,.08);font-size:60px}
+.about-media-frame{position:absolute;inset:0;border:1px solid var(--border);pointer-events:none;transform:translate(16px,-16px)}
+.about-tag{position:absolute;bottom:-20px;right:-20px;background:var(--gold);color:var(--black);padding:14px 24px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;z-index:2}
+.about-content{}
+.about-lead{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:var(--white);line-height:1.7;margin-bottom:28px}
+.about-text{font-size:14px;line-height:2.1;color:var(--text-muted);font-weight:300;margin-bottom:16px}
+.about-creds{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+.cred-item{display:flex;align-items:flex-start;gap:14px;padding:18px;background:var(--black3);border:1px solid var(--border2)}
+.cred-icon{color:var(--gold);font-size:16px;margin-top:2px;flex-shrink:0}
+.cred-text{font-size:13px;color:var(--text-light);line-height:1.5}
+
+/* ── SERVICES ── */
+#services{background:var(--black)}
+.services-intro{max-width:560px;margin-bottom:70px}
+.services-intro p{font-size:14px;line-height:2;color:var(--text-muted);font-weight:300;margin-top:20px}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border2)}
+.srv-card{background:var(--black);padding:44px 36px;position:relative;overflow:hidden;transition:background .4s;cursor:default}
+.srv-card::before{content:'';position:absolute;top:0;right:0;width:0;height:1px;background:var(--gold);transition:width .5s}
+.srv-card:hover{background:var(--black2)}.srv-card:hover::before{width:100%}
+.srv-num{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:var(--border2);line-height:1;margin-bottom:20px;transition:color .4s}
+.srv-card:hover .srv-num{color:var(--gold3)}
+.srv-icon{font-size:22px;color:var(--gold);margin-bottom:16px}
+.srv-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--white);margin-bottom:12px}
+.srv-desc{font-size:13px;line-height:1.9;color:var(--text-muted);font-weight:300}
+
+/* ── BEFORE / AFTER ── */
+#gallery{background:var(--black2)}
+.gallery-intro{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;flex-wrap:wrap;gap:24px}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.gallery-item{position:relative;overflow:hidden;aspect-ratio:3/4;background:var(--black3);cursor:pointer}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.gallery-item:hover img{transform:scale(1.04)}
+.gallery-item-label{position:absolute;bottom:0;left:0;right:0;padding:20px 18px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);transform:translateY(100%);transition:transform .4s}
+.gallery-item:hover .gallery-item-label{transform:translateY(0)}
+.gallery-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:rgba(255,255,255,.1);font-size:40px;background:var(--black3)}
+.gallery-ph p{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2)}
+.gallery-empty{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--text-muted);font-size:14px;font-style:italic}
+
+/* ── REVIEWS ── */
+#reviews{background:var(--black)}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--border2);margin-top:60px}
+.rev-card{background:var(--black);padding:40px 36px;position:relative}
+.rev-card::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:120px;line-height:1;color:var(--gold3);position:absolute;top:16px;right:28px}
+.rev-stars{color:var(--gold);font-size:13px;margin-bottom:20px;letter-spacing:2px}
+.rev-text{font-size:14px;line-height:2;color:var(--text-muted);font-weight:300;margin-bottom:28px;font-style:italic}
+.rev-author{display:flex;align-items:center;gap:14px}
+.rev-avatar{width:42px;height:42px;background:var(--gold3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);flex-shrink:0}
+.rev-name{font-size:13px;font-weight:700;color:var(--white);letter-spacing:1px}
+.rev-meta{font-size:11px;color:var(--text-muted);margin-top:3px;letter-spacing:1px}
+
+/* ── BOOKING ── */
+#booking{background:var(--black2);position:relative;overflow:hidden}
+#booking::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.booking-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.booking-info .sec-title{margin-bottom:24px}
+.booking-info p{font-size:14px;line-height:2.1;color:var(--text-muted);font-weight:300;margin-bottom:32px}
+.contact-items{display:flex;flex-direction:column;gap:16px}
+.contact-item{display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--border2)}
+.contact-item i{color:var(--gold);font-size:16px;width:20px;text-align:center}
+.contact-item span{font-size:13px;color:var(--text-light)}
+.booking-cta{background:var(--black3);padding:48px;border:1px solid var(--border2);position:relative}
+.booking-cta::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.booking-cta::after{content:'';position:absolute;bottom:0;left:0;width:60px;height:60px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.booking-cta h3{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--white);margin-bottom:16px}
+.booking-cta p{font-size:13px;line-height:1.9;color:var(--text-muted);margin-bottom:32px}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;background:var(--gold);color:var(--black);padding:18px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;font-family:'Almarai',sans-serif;transition:all .3s;margin-bottom:12px}
+.wa-btn:hover{background:var(--gold2)}
+.wa-btn i{font-size:20px}
+.call-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;background:transparent;color:var(--white);padding:16px;font-size:12px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:1px solid var(--border2);cursor:pointer;font-family:'Almarai',sans-serif;transition:all .3s}
+.call-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── FOOTER ── */
+footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--border2)}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px;margin-bottom:50px}
+.footer-brand-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--white);letter-spacing:3px;margin-bottom:6px}
+.footer-brand-title{font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:20px}
+.footer-desc{font-size:13px;line-height:2;color:var(--text-muted);font-weight:300;max-width:300px}
+.footer-social{display:flex;gap:12px;margin-top:24px}
+.soc-btn{width:38px;height:38px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px;text-decoration:none;transition:all .3s}
+.soc-btn:hover{border-color:var(--gold);color:var(--gold)}
+.footer-col h4{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.footer-col ul{list-style:none}.footer-col ul li{margin-bottom:12px}
+.footer-col ul li a{text-decoration:none;font-size:13px;color:var(--text-muted);transition:color .3s;font-weight:300}
+.footer-col ul li a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid var(--border2);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:12px;color:var(--text-muted)}
+.footer-bottom a{color:rgba(201,168,76,.3);text-decoration:none;font-size:12px}
+
+/* ── MODAL BOOKING ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--black2);border:1px solid var(--border);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:modalIn .4s cubic-bezier(.175,.885,.32,1.1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(20px)}to{opacity:1;transform:none}}
+.modal-head{background:var(--black3);padding:28px 32px;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--white)}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;transition:color .2s;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{color:var(--white)}
+.modal-body{padding:32px}
+.steps{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px}
+.step-dot{width:28px;height:28px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-muted);transition:all .3s}
+.step-dot.active{background:var(--gold);border-color:var(--gold);color:var(--black);font-weight:700}
+.step-dot.done{border-color:var(--gold);color:var(--gold)}
+.step-line{flex:1;max-width:40px;height:1px;background:var(--border2)}
+.step-content{display:none}.step-content.active{display:block}
+.form-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:14px}
+.doc-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.doc-opt{padding:16px;border:1px solid var(--border2);cursor:pointer;transition:all .3s;text-align:center;background:var(--black)}
+.doc-opt:hover{border-color:var(--gold)}.doc-opt.selected{border-color:var(--gold);background:var(--gold3)}
+.doc-opt-name{font-size:14px;color:var(--white);margin-top:8px;font-weight:300}
+.doc-opt-spec{font-size:11px;color:var(--text-muted);margin-top:4px;letter-spacing:1px}
+.cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.cal-month{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--white)}
+.cal-nav{background:none;border:1px solid var(--border2);color:var(--text-muted);width:30px;height:30px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cal-nav:hover{border-color:var(--gold);color:var(--gold)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day-hdr{text-align:center;font-size:10px;letter-spacing:2px;color:var(--text-muted);padding:6px 0;text-transform:uppercase}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .2s;color:var(--text-light);border:1px solid transparent}
+.cal-day:hover{border-color:var(--border)}.cal-day.today{color:var(--gold);border-color:var(--border)}
+.cal-day.selected{background:var(--gold);color:var(--black);font-weight:700;border-color:var(--gold)}
+.cal-day.disabled,.cal-day.closed{color:rgba(255,255,255,.15);cursor:not-allowed;pointer-events:none}
+.time-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.time-slot{padding:10px;text-align:center;border:1px solid var(--border2);cursor:pointer;font-size:12px;color:var(--text-muted);transition:all .2s}
+.time-slot:hover{border-color:var(--gold);color:var(--gold)}
+.time-slot.selected{background:var(--gold);color:var(--black);border-color:var(--gold);font-weight:700}
+.sum-row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border2);font-size:13px}
+.sum-row:last-child{border-bottom:none}
+.sum-label{color:var(--text-muted)}.sum-val{color:var(--white);font-weight:400}
+.btn-next{width:100%;background:var(--gold);color:var(--black);padding:16px;border:none;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Almarai',sans-serif;transition:all .3s;margin-top:20px}
+.btn-next:hover{background:var(--gold2)}.btn-next:disabled{opacity:.3;cursor:not-allowed}
+.btn-back{background:none;border:1px solid var(--border2);color:var(--text-muted);width:100%;padding:12px;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Almarai',sans-serif;transition:all .3s;margin-top:8px}
+.btn-back:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── WA FLOAT ── */
+.wa-float{position:fixed;bottom:32px;left:32px;z-index:998;width:52px;height:52px;background:#25D366;display:flex;align-items:center;justify-content:center;color:white;font-size:22px;text-decoration:none;transition:all .3s;box-shadow:0 4px 20px rgba(37,211,102,.35)}
+.wa-float:hover{transform:scale(1.1);box-shadow:0 8px 30px rgba(37,211,102,.5)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .hero-content{margin-right:0;padding-top:100px;padding-bottom:80px}
+  .hero-media{display:none}
+  .about-grid,.booking-wrap,.footer-inner{grid-template-columns:1fr;gap:40px}
+  .about-media{height:360px}
+  .services-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+}
+@media(max-width:600px){
+  .services-grid{grid-template-columns:1fr}
+  .about-creds{grid-template-columns:1fr}
+  .hero-stats{gap:24px}
+  .footer-inner{gap:36px}
+  .time-slots{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="loader-name" id="loader-name">د. الطبيب</div>
+  <div class="loader-line"></div>
+  <div class="loader-sub">أخصائي تقويم الأسنان</div>
+</div>
+
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <span class="nav-logo-name" id="nav-name">د. الطبيب</span>
+      <span class="nav-logo-title" id="nav-title">أخصائي تقويم الأسنان</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">من أنا</a></li>
+      <li><a href="#services">الخدمات</a></li>
+      <li><a href="#gallery">قبل وبعد</a></li>
+      <li><a href="#reviews">التقييمات</a></li>
+      <li><a href="#booking">التواصل</a></li>
+      <li><a href="#" class="btn-book-nav" onclick="openBooking();return false">احجز موعد</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <svg class="hero-geo" viewBox="0 0 500 500">
+    <circle cx="250" cy="250" r="200"/><circle cx="250" cy="250" r="150"/><circle cx="250" cy="250" r="100"/>
+    <line x1="50" y1="250" x2="450" y2="250" stroke="white" stroke-width=".5" opacity=".4"/>
+    <line x1="250" y1="50" x2="250" y2="450" stroke="white" stroke-width=".5" opacity=".4"/>
+  </svg>
+  <div class="hero-media" id="hero-media-wrap">
+    <div class="hero-media-ph"><i class="fa fa-user-doctor"></i></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><div class="hero-eyebrow-line"></div><span id="hero-badge">أخصائي تقويم الأسنان</span></div>
+    <h1 class="hero-name"><span id="hero-name-line">د. اسمك الكريم</span><br><em id="hero-tagline">ابتسامتك. هويتك.</em></h1>
+    <p class="hero-title" id="hero-sub-title">Orthodontic Specialist · تقويم الأسنان</p>
+    <p class="hero-desc" id="hero-desc">أقدّم لك رعاية تقويمية متخصصة تجمع بين الدقة العلمية والحس الجمالي، لأمنحك الابتسامة التي تستحقها.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="openBooking()"><i class="fa fa-calendar-check"></i><span id="hero-btn1">احجز موعدك</span></button>
+      <a href="#about" class="btn-secondary"><span id="hero-btn2">اعرف أكثر</span><i class="fa fa-arrow-left"></i></a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num" id="stat1-num">+1000</div><div class="hero-stat-label" id="stat1-label">حالة ناجحة</div></div>
+      <div><div class="hero-stat-num" id="stat2-num">+8</div><div class="hero-stat-label" id="stat2-label">سنوات خبرة</div></div>
+      <div><div class="hero-stat-num" id="stat3-num">4.9</div><div class="hero-stat-label" id="stat3-label">تقييم المرضى</div></div>
+    </div>
+  </div>
+  <div class="scroll-indicator"><span>scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-media reveal">
+        <div class="about-media-inner" id="about-media-wrap">
+          <div class="about-media-ph"><i class="fa fa-user-doctor"></i></div>
+        </div>
+        <div class="about-media-frame"></div>
+        <div class="about-tag" id="about-tag">منذ 2016</div>
+      </div>
+      <div class="about-content reveal">
+        <div class="sec-label"><div class="sec-label-line"></div><span>من أنا</span></div>
+        <h2 class="sec-title" style="margin-bottom:28px">طبيب تقويم<br><em>بصمة مختلفة</em></h2>
+        <p class="about-lead" id="about-lead">أؤمن بأن كل ابتسامة قصة فريدة تستحق اهتماماً استثنائياً.</p>
+        <p class="about-text" id="about-p1"></p>
+        <p class="about-text" id="about-p2"></p>
+        <div class="about-creds">
+          <div class="cred-item"><i class="fa fa-graduation-cap cred-icon"></i><span class="cred-text" id="cred1">بورد تخصصي في تقويم الأسنان</span></div>
+          <div class="cred-item"><i class="fa fa-award cred-icon"></i><span class="cred-text" id="cred2">عضو الجمعية السعودية لتقويم الأسنان</span></div>
+          <div class="cred-item"><i class="fa fa-microscope cred-icon"></i><span class="cred-text" id="cred3">تقنيات تقويم حديثة وشفافة</span></div>
+          <div class="cred-item"><i class="fa fa-star cred-icon"></i><span class="cred-text" id="cred4">خبرة أكثر من 8 سنوات</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="services-intro reveal">
+      <div class="sec-label"><div class="sec-label-line"></div><span>تخصصاتي</span></div>
+      <h2 class="sec-title">خدماتي<br><em>التقويمية</em></h2>
+      <p id="services-desc">أقدّم طيفاً شاملاً من حلول تقويم الأسنان بأحدث التقنيات المعتمدة عالمياً.</p>
+    </div>
+    <div class="services-grid" id="services-grid"></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="container">
+    <div class="gallery-intro reveal">
+      <div>
+        <div class="sec-label"><div class="sec-label-line"></div><span>معرض الأعمال</span></div>
+        <h2 class="sec-title">قبل <em>&</em> بعد</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);max-width:300px;text-align:left;line-height:1.9">نتائج حقيقية لحالات علاجها من الأرشيف الشخصي بموافقة أصحابها.</p>
+    </div>
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <div class="sec-label reveal"><div class="sec-label-line"></div><span>تقييمات</span></div>
+    <h2 class="sec-title reveal">ماذا يقول<br><em>مرضاي</em></h2>
+    <div class="reviews-grid" id="reviews-grid"></div>
+  </div>
+</section>
+
+<!-- BOOKING / CONTACT -->
+<section id="booking">
+  <div class="container">
+    <div class="booking-wrap">
+      <div class="booking-info reveal">
+        <div class="sec-label"><div class="sec-label-line"></div><span>تواصل معي</span></div>
+        <h2 class="sec-title" style="margin-bottom:24px">ابدأ رحلتك<br><em>اليوم</em></h2>
+        <p id="contact-desc">يسعدني الإجابة على استفساراتك وحجز موعدك في أقرب وقت.</p>
+        <div class="contact-items" id="contact-items"></div>
+      </div>
+      <div class="booking-cta reveal">
+        <h3>احجز موعدك<br>الاستشاري المجاني</h3>
+        <p>خطوتك الأولى نحو الابتسامة التي تريد — استشارة مجانية لتقييم حالتك.</p>
+        <a class="wa-btn" id="wa-book-btn" href="#" target="_blank" onclick="openBooking();return false">
+          <i class="fab fa-whatsapp"></i>احجز عبر واتساب
+        </a>
+        <a class="call-btn" id="call-btn" href="#">
+          <i class="fa fa-phone"></i><span id="call-btn-text">اتصل بنا</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name" id="footer-name">د. الطبيب</div>
+        <div class="footer-brand-title" id="footer-title-f">أخصائي تقويم الأسنان</div>
+        <p class="footer-desc" id="footer-desc">ابتسامتك هي انعكاس لثقتك — أنا هنا لأجعلها تتألق.</p>
+        <div class="footer-social" id="social-links"></div>
+      </div>
+      <div class="footer-col">
+        <h4>روابط</h4>
+        <ul>
+          <li><a href="#about">من أنا</a></li>
+          <li><a href="#services">الخدمات</a></li>
+          <li><a href="#gallery">قبل وبعد</a></li>
+          <li><a href="#reviews">التقييمات</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>خدماتي</h4>
+        <ul id="footer-services"></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 جميع الحقوق محفوظة — <span id="footer-name2">د. الطبيب</span></p>
+      <a href="admin.html">لوحة الإدارة</a>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" id="wa-float" href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>حجز موعد</h2>
+      <button class="modal-close" onclick="closeBooking()"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="steps">
+        <div class="step-dot active" id="sd1">1</div><div class="step-line"></div>
+        <div class="step-dot" id="sd2">2</div><div class="step-line"></div>
+        <div class="step-dot" id="sd3">3</div>
+      </div>
+      <!-- Step 1: Doctor -->
+      <div class="step-content active" id="step-1">
+        <label class="form-label">اختر الطبيب</label>
+        <div class="doc-options" id="modal-docs"></div>
+        <button class="btn-next" id="sn1" onclick="goStep(2)" disabled>التالي</button>
+      </div>
+      <!-- Step 2: Date & Time -->
+      <div class="step-content" id="step-2">
+        <label class="form-label">اختر التاريخ</label>
+        <div class="cal-header">
+          <button class="cal-nav" onclick="changeMonth(-1)"><i class="fa fa-chevron-right"></i></button>
+          <span class="cal-month" id="cal-label"></span>
+          <button class="cal-nav" onclick="changeMonth(1)"><i class="fa fa-chevron-left"></i></button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <label class="form-label" style="margin-top:20px">اختر الوقت</label>
+        <div class="time-slots" id="time-slots"></div>
+        <button class="btn-next" id="sn2" onclick="goStep(3)" disabled>التالي</button>
+        <button class="btn-back" onclick="goStep(1)">رجوع</button>
+      </div>
+      <!-- Step 3: Confirm -->
+      <div class="step-content" id="step-3">
+        <label class="form-label">ملخص الحجز</label>
+        <div style="border:1px solid var(--border2);padding:20px;margin-bottom:4px" id="booking-summary"></div>
+        <button class="btn-next" style="background:#25D366" onclick="confirmBooking()">
+          <i class="fab fa-whatsapp"></i> تأكيد عبر واتساب
+        </button>
+        <button class="btn-back" onclick="goStep(2)">تغيير الموعد</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script>
+const DAYS  =['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+let D=null, BK={doctorId:null,date:null,time:null,month:null};
+
+/* helpers */
+function set(id,v){const e=document.getElementById(id);if(e&&v!==undefined)e.textContent=v}
+function isVideo(u){return u&&(/youtube\.com|youtu\.be|vimeo\.com/i.test(u)||/\.(mp4|webm|ogg|mov)([?#]|$)/i.test(u))}
+function buildMedia(url,style){
+  if(!url)return null;
+  style=style||'width:100%;height:100%;object-fit:cover;object-position:center top';
+  const yt=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  if(yt)return`<iframe src="https://www.youtube.com/embed/${yt[1]}?autoplay=1&mute=1&loop=1&playlist=${yt[1]}&controls=0&rel=0" style="${style};border:none" allow="autoplay" allowfullscreen></iframe>`;
+  const vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if(vm)return`<iframe src="https://player.vimeo.com/video/${vm[1]}?autoplay=1&muted=1&loop=1&background=1" style="${style};border:none" allowfullscreen></iframe>`;
+  if(isVideo(url))return`<video src="${url}" style="${style}" autoplay muted loop playsinline></video>`;
+  return`<img src="${url}" alt="" style="${style}">`;
+}
+
+async function boot(){
+  D=await DB.read();
+  applyAll();
+  document.getElementById('loader').classList.add('out');
+  initScroll(); initReveal();
+}
+
+function applyAll(){
+  const i=D.clinicInfo||{}, h=D.hero||{}, a=D.about||{};
+  const wa=(i.whatsapp||'966500000000').replace(/\D/g,'');
+
+  /* nav */
+  set('nav-name', i.name); set('nav-title', i.slogan);
+  set('loader-name', i.name);
+
+  /* hero */
+  set('hero-badge',h.badge); set('hero-name-line',h.nameDisplay||i.name);
+  set('hero-tagline',h.tagline); set('hero-sub-title',h.subTitle);
+  set('hero-desc',h.desc); set('hero-btn1',h.btn1); set('hero-btn2',h.btn2);
+  set('stat1-num',h.stat1Num); set('stat1-label',h.stat1Label);
+  set('stat2-num',h.stat2Num); set('stat2-label',h.stat2Label);
+  set('stat3-num',h.stat3Num); set('stat3-label',h.stat3Label);
+  const hWrap=document.getElementById('hero-media-wrap');
+  if(h.heroMedia&&hWrap){const html=buildMedia(h.heroMedia);if(html)hWrap.innerHTML=html;}
+
+  /* about */
+  set('about-lead',a.lead); set('about-tag',a.tag);
+  set('about-p1',i.about1); set('about-p2',i.about2);
+  set('cred1',a.cred1); set('cred2',a.cred2); set('cred3',a.cred3); set('cred4',a.cred4);
+  const aWrap=document.getElementById('about-media-wrap');
+  if(a.img&&aWrap){const html=buildMedia(a.img,'width:100%;height:100%;object-fit:cover;object-position:center top');if(html)aWrap.innerHTML=html;}
+
+  /* services */
+  renderServices();
+
+  /* gallery */
+  renderGallery();
+
+  /* reviews */
+  renderReviews();
+
+  /* contact */
+  set('contact-desc',i.contactDesc);
+  set('footer-name',i.name); set('footer-name2',i.name);
+  set('footer-title-f',i.slogan); set('footer-desc',i.footerDesc);
+  document.getElementById('wa-float').href='https://wa.me/'+wa;
+  document.getElementById('wa-book-btn').setAttribute('data-wa',wa);
+  const callBtn=document.getElementById('call-btn');
+  if(i.phone&&callBtn){callBtn.href='tel:'+i.phone.replace(/\s/g,'');set('call-btn-text',i.phone);}
+  const items=[];
+  if(i.phone) items.push(`<div class="contact-item"><i class="fa fa-phone"></i><span>${i.phone}</span></div>`);
+  if(i.whatsapp) items.push(`<div class="contact-item"><i class="fab fa-whatsapp"></i><span>${i.whatsapp}</span></div>`);
+  if(i.address) items.push(`<div class="contact-item"><i class="fa fa-location-dot"></i><span>${i.address}</span></div>`);
+  if(i.email) items.push(`<div class="contact-item"><i class="fa fa-envelope"></i><span>${i.email}</span></div>`);
+  document.getElementById('contact-items').innerHTML=items.join('');
+
+  /* social */
+  applySocial();
+
+  /* footer services */
+  document.getElementById('footer-services').innerHTML=(D.services||[]).slice(0,5).map(s=>`<li><a href="#">${s.name}</a></li>`).join('');
+
+  /* title */
+  if(i.name)document.title=i.name+' — أخصائي تقويم الأسنان';
+  if(i.logoUrl){const w=document.getElementById('nav-logo-wrap');if(w)w.innerHTML=`<img src="${i.logoUrl}" style="height:44px;object-fit:contain">`;}
+}
+
+function renderServices(){
+  const grid=document.getElementById('services-grid');
+  const svs=D.services||[];
+  if(!svs.length){grid.innerHTML='';return;}
+  grid.innerHTML=svs.map((s,i)=>`
+    <div class="srv-card reveal">
+      <div class="srv-num">0${i+1}</div>
+      <div class="srv-icon"><i class="${s.icon||'fa fa-tooth'}"></i></div>
+      <div class="srv-name">${s.name}</div>
+      <div class="srv-desc">${s.desc}</div>
+    </div>`).join('');
+}
+
+function renderGallery(){
+  const grid=document.getElementById('gallery-grid');
+  const items=D.gallery||[];
+  if(!items.length){
+    grid.innerHTML='<div class="gallery-empty">لم تُضف صور بعد — أضفها من لوحة الإدارة</div>';
+    return;
+  }
+  grid.innerHTML=items.map(g=>`
+    <div class="gallery-item reveal">
+      ${g.img?`<img src="${g.img}" alt="${g.label||''}" loading="lazy">`:`<div class="gallery-ph"><i class="fa fa-image"></i><p>${g.label||'صورة'}</p></div>`}
+      ${g.label?`<div class="gallery-item-label">${g.label}</div>`:''}
+    </div>`).join('');
+}
+
+function renderReviews(){
+  const grid=document.getElementById('reviews-grid');
+  grid.innerHTML=(D.reviews||[]).map(r=>`
+    <div class="rev-card reveal">
+      <div class="rev-stars">${'★'.repeat(r.rating||5)}${'☆'.repeat(5-(r.rating||5))}</div>
+      <p class="rev-text">${r.text}</p>
+      <div class="rev-author">
+        <div class="rev-avatar">${r.initial||r.name?.[0]||'م'}</div>
+        <div><div class="rev-name">${r.name}</div><div class="rev-meta">${r.date||''}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+function applySocial(){
+  const s=D.social||{};
+  const wa=(D.clinicInfo?.whatsapp||'').replace(/\D/g,'');
+  const map={instagram:'fab fa-instagram',twitter:'fab fa-twitter',snapchat:'fab fa-snapchat',tiktok:'fab fa-tiktok',facebook:'fab fa-facebook-f',youtube:'fab fa-youtube'};
+  const links=Object.entries(map).filter(([k])=>s[k]).map(([k,ic])=>`<a class="soc-btn" href="${s[k]}" target="_blank"><i class="${ic}"></i></a>`);
+  if(wa)links.push(`<a class="soc-btn" href="https://wa.me/${wa}" target="_blank"><i class="fab fa-whatsapp"></i></a>`);
+  document.getElementById('social-links').innerHTML=links.join('');
+}
+
+/* Scroll nav */
+function initScroll(){
+  const nav=document.getElementById('main-nav');
+  window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
+}
+
+/* Reveal */
+function initReveal(){
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+/* ── BOOKING ── */
+function openBooking(){
+  BK={doctorId:null,date:null,time:null,month:new Date()};
+  BK.month.setDate(1);
+  document.getElementById('booking-modal').classList.add('active');
+  goStep(1); renderModalDocs();
+}
+function closeBooking(){document.getElementById('booking-modal').classList.remove('active')}
+document.getElementById('booking-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeBooking()});
+
+function renderModalDocs(){
+  const docs=D.doctors||[];
+  document.getElementById('modal-docs').innerHTML=docs.map(d=>`
+    <div class="doc-opt" id="do-${d.id}" onclick="selDoc(${d.id})">
+      <div style="font-size:22px;color:var(--gold)"><i class="fa fa-user-doctor"></i></div>
+      <div class="doc-opt-name">${d.name}</div>
+      <div class="doc-opt-spec">${d.specialty||'تقويم الأسنان'}</div>
+    </div>`).join('');
+}
+function selDoc(id){BK.doctorId=id;document.querySelectorAll('.doc-opt').forEach(e=>e.classList.remove('selected'));const o=document.getElementById('do-'+id);if(o)o.classList.add('selected');document.getElementById('sn1').disabled=false;}
+
+function goStep(n){
+  for(let i=1;i<=3;i++){
+    document.getElementById('step-'+i).classList.toggle('active',i===n);
+    const d=document.getElementById('sd'+i);
+    d.classList.toggle('active',i===n);d.classList.toggle('done',i<n);
+  }
+  if(n===2)renderCal();
+  if(n===3)renderSum();
+}
+
+function renderCal(){
+  const y=BK.month.getFullYear(),m=BK.month.getMonth();
+  const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
+  const closed=[0,1,2,3,4,5,6].filter(i=>!(doc?.workDays||[0,1,2,3,4]).includes(i));
+  const today=new Date();today.setHours(0,0,0,0);
+  document.getElementById('cal-label').textContent=MONTHS[m]+' '+y;
+  let h=DAYS.map(n=>`<div class="cal-day-hdr">${n[0]}</div>`).join('');
+  for(let i=0;i<new Date(y,m,1).getDay();i++)h+=`<div></div>`;
+  for(let day=1;day<=new Date(y,m+1,0).getDate();day++){
+    const dt=new Date(y,m,day),dow=dt.getDay();
+    const str=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const past=dt<today,cl=closed.includes(dow),sel=BK.date===str,tod=dt.getTime()===today.getTime();
+    let c='cal-day';
+    if(past||cl)c+=' disabled';else if(sel)c+=' selected';else if(tod)c+=' today';
+    h+=`<div class="${c}" ${(!past&&!cl)?`onclick="selDate('${str}')"`:''}>${day}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=h;
+  renderSlots();
+}
+function changeMonth(d){BK.month.setMonth(BK.month.getMonth()+d);renderCal();}
+function selDate(s){BK.date=s;BK.time=null;renderCal();document.getElementById('sn2').disabled=true;}
+function renderSlots(){
+  const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
+  if(!doc||!BK.date){document.getElementById('time-slots').innerHTML='<p style="color:var(--text-muted);font-size:13px;grid-column:1/-1;text-align:center;padding:16px">اختر تاريخاً أولاً</p>';return;}
+  const[sh,sm]=(doc.startTime||'9:00').split(':').map(Number);
+  const[eh,em]=(doc.endTime||'17:00').split(':').map(Number);
+  const dur=doc.slotDuration||30;let cur=sh*60+sm,end=eh*60+em;const sl=[];
+  while(cur+dur<=end){sl.push(`${String(Math.floor(cur/60)).padStart(2,'0')}:${String(cur%60).padStart(2,'0')}`);cur+=dur;}
+  document.getElementById('time-slots').innerHTML=sl.map(t=>`<div class="time-slot${BK.time===t?' selected':''}" onclick="selTime('${t}')">${t}</div>`).join('');
+}
+function selTime(t){BK.time=t;renderSlots();document.getElementById('sn2').disabled=false;}
+function renderSum(){
+  const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
+  const dt=new Date(BK.date+'T12:00:00');
+  document.getElementById('booking-summary').innerHTML=`
+    <div class="sum-row"><span class="sum-label">الطبيب</span><span class="sum-val">${doc?.name||''}</span></div>
+    <div class="sum-row"><span class="sum-label">التاريخ</span><span class="sum-val">${DAYS[dt.getDay()]} ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}</span></div>
+    <div class="sum-row"><span class="sum-label">الوقت</span><span class="sum-val">${BK.time}</span></div>`;
+}
+function confirmBooking(){
+  const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
+  const dt=new Date(BK.date+'T12:00:00');
+  const date=`${DAYS[dt.getDay()]} ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+  const msg=encodeURIComponent(`السلام عليكم،\nأرغب في حجز موعد:\n👨‍⚕️ الطبيب: ${doc?.name}\n📅 التاريخ: ${date}\n🕐 الوقت: ${BK.time}\n\nأرجو التأكيد، شكراً.`);
+  const wa=((D.clinicInfo||{}).whatsapp||'966500000000').replace(/\D/g,'');
+  window.open(`https://wa.me/${wa}?text=${msg}`,'_blank');
+  closeBooking();
+}
+
+boot();
+</script>
+</body>
+</html>
