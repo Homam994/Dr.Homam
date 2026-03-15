@@ -325,8 +325,13 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
 <nav id="main-nav">
   <div class="nav-inner">
     <a class="nav-logo" href="#">
-      <span class="nav-logo-name" id="nav-name">د. محمدهمام السمان</span>
-      <span class="nav-logo-title" id="nav-title">أخصائي تقويم الأسنان</span>
+      <div id="nav-logo-wrap" style="display:none;height:44px;align-items:center">
+        <img id="nav-logo-img" src="" style="height:44px;object-fit:contain;max-width:160px">
+      </div>
+      <div id="nav-text-wrap">
+        <span class="nav-logo-name" id="nav-name">د. محمدهمام السمان</span>
+        <span class="nav-logo-title" id="nav-title">أخصائي تقويم الأسنان</span>
+      </div>
     </a>
     <ul class="nav-links">
       <li><a href="#about">من أنا</a></li>
@@ -655,7 +660,18 @@ function applyAll(){
 
   /* title */
   if(i.name)document.title=i.name+' — أخصائي تقويم الأسنان';
-  if(i.logoUrl){const w=document.getElementById('nav-logo-wrap');if(w)w.innerHTML=`<img src="${i.logoUrl}" style="height:44px;object-fit:contain">`;}
+  // شعار الـ navbar
+  if(i.logoUrl){
+    const wrap=document.getElementById('nav-logo-wrap');
+    const img=document.getElementById('nav-logo-img');
+    const textWrap=document.getElementById('nav-text-wrap');
+    if(wrap&&img){
+      img.src=i.logoUrl;
+      wrap.style.display='flex';
+      // إخفاء النص إذا وُجد شعار
+      if(textWrap)textWrap.style.display='none';
+    }
+  }
 }
 
 function renderServices(){

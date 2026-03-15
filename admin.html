@@ -442,13 +442,38 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
   <!-- LOGO -->
   <div class="page" id="page-logo">
     <div class="card">
-      <div class="card-title" style="margin-bottom:20px"><i class="fa fa-image"></i>شعار العيادة</div>
-      <div class="upload-box" onclick="document.getElementById('logo-inp').click()" id="logo-drop">
-        <input type="file" id="logo-inp" accept="image/*" style="display:none" onchange="previewLogo(this)">
-        <div id="logo-prev-wrap" style="display:none;text-align:center"></div>
-        <div id="logo-ph" class="upload-ph"><i class="fa fa-cloud-arrow-up"></i><p>انقر لرفع الشعار</p><p style="font-size:11px;margin-top:4px;color:var(--muted)">PNG شفاف مُفضَّل</p></div>
+      <div class="card-header">
+        <div><div class="card-title"><i class="fa fa-image"></i>شعار العيادة</div><div class="card-sub">يظهر في شريط التنقل</div></div>
+        <button class="btn btn-gold" onclick="saveLogo()"><i class="fa fa-cloud-arrow-up"></i>حفظ الشعار</button>
       </div>
-      <button class="btn btn-gold" style="margin-top:16px" onclick="saveLogo()"><i class="fa fa-cloud-arrow-up"></i>حفظ الشعار</button>
+
+      <!-- معاينة الشعار الحالي -->
+      <div id="logo-current-wrap" style="display:none;margin-bottom:20px;padding:20px;background:var(--black);border:1px solid var(--border2);text-align:center">
+        <p style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;text-transform:uppercase">الشعار الحالي</p>
+        <img id="logo-current-img" src="" style="max-height:80px;max-width:240px;object-fit:contain">
+      </div>
+
+      <!-- Tab: رابط Cloudinary (الموصى به) -->
+      <div style="margin-bottom:16px">
+        <label class="form-label" style="color:var(--gold)">🔗 رابط Cloudinary (موصى به — لا يضيع)</label>
+        <input type="url" class="form-input" id="logo-url" placeholder="https://res.cloudinary.com/.../logo.png" dir="ltr"
+          oninput="previewLogoUrl()">
+        <div id="logo-url-prev" style="margin-top:10px;display:none;padding:16px;background:var(--black);border:1px solid var(--border2);text-align:center">
+          <img id="logo-url-img" src="" style="max-height:80px;max-width:240px;object-fit:contain">
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">ارفع الشعار على Cloudinary وانسخ الرابط هنا</p>
+      </div>
+
+      <div style="border-top:1px solid var(--border2);margin:20px 0;padding-top:20px">
+        <label class="form-label" style="color:var(--muted)">📁 أو رفع مباشر (قد لا يُحفظ إذا كان الحجم كبيراً)</label>
+        <div class="upload-box" onclick="document.getElementById('logo-inp').click()" id="logo-drop" style="min-height:80px">
+          <input type="file" id="logo-inp" accept="image/*" style="display:none" onchange="previewLogo(this)">
+          <div id="logo-prev-wrap" style="display:none;text-align:center;width:100%">
+            <img id="logo-prev-img" src="" style="max-height:70px;max-width:200px;object-fit:contain">
+          </div>
+          <div id="logo-ph" class="upload-ph"><i class="fa fa-cloud-arrow-up"></i><p>انقر لرفع الشعار</p><p style="font-size:11px;margin-top:4px;color:var(--muted)">PNG شفاف مُفضَّل</p></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -604,7 +629,7 @@ function showPage(name,el){
   document.getElementById('page-title').textContent=m.t;
   document.getElementById('page-sub').textContent=m.s;
   if(el)el.classList.add('active');
-  const fns={dashboard:renderDash,setup:loadSetup,info:loadInfo,hero:loadHero,about:loadAbout,services:renderSrvList,gallery:renderGalList,reviews:renderRevList,hours:loadHours,social:loadSocial,fonts:loadFonts};
+  const fns={dashboard:renderDash,setup:loadSetup,info:loadInfo,hero:loadHero,about:loadAbout,services:renderSrvList,gallery:renderGalList,reviews:renderRevList,hours:loadHours,social:loadSocial,fonts:loadFonts,logo:loadLogo};
   if(fns[name])fns[name]();
 }
 
@@ -970,21 +995,65 @@ async function saveSocial(){
 }
 
 /* ── LOGO ── */
+function loadLogo(){
+  const url=DATA?.clinicInfo?.logoUrl||'';
+  const curWrap=document.getElementById('logo-current-wrap');
+  const curImg=document.getElementById('logo-current-img');
+  if(url&&curWrap&&curImg){
+    curImg.src=url;curWrap.style.display='block';
+    // إذا كان رابطاً (وليس base64) ضعه في حقل الرابط
+    if(url.startsWith('http')){
+      const urlInp=document.getElementById('logo-url');
+      if(urlInp)urlInp.value=url;
+      previewLogoUrl();
+    }
+  }else if(curWrap){curWrap.style.display='none';}
+}
+
+function previewLogoUrl(){
+  const url=document.getElementById('logo-url').value.trim();
+  const prev=document.getElementById('logo-url-prev');
+  const img=document.getElementById('logo-url-img');
+  if(url&&prev&&img){
+    img.src=url;prev.style.display='block';
+    // امسح الـ b64 لأن الأولوية للرابط
+    const drop=document.getElementById('logo-drop');
+    if(drop)drop.dataset.b64='';
+  }else if(prev){prev.style.display='none';}
+}
+
 function previewLogo(inp){
   const f=inp.files[0];if(!f)return;
   const reader=new FileReader();reader.onload=e=>{
     const img=new Image();img.onload=()=>{
-      const MAX=400,canvas=document.createElement('canvas');let w=img.width,h=img.height;if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      const MAX=500,canvas=document.createElement('canvas');
+      let w=img.width,h=img.height;if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
       canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
       const b64=canvas.toDataURL('image/png',.9);
       document.getElementById('logo-drop').dataset.b64=b64;
-      const pw=document.getElementById('logo-prev-wrap');pw.innerHTML=`<img src="${b64}" style="max-height:80px;border-radius:4px">`;pw.style.display='block';
+      const pw=document.getElementById('logo-prev-wrap');
+      const pi=document.getElementById('logo-prev-img');
+      if(pi)pi.src=b64;
+      if(pw)pw.style.display='block';
       document.getElementById('logo-ph').style.display='none';
-    };img.src=e.target.result;};reader.readAsDataURL(f);
+      // امسح الـ URL لأن الأولوية للرفع
+      const urlInp=document.getElementById('logo-url');
+      if(urlInp)urlInp.value='';
+      const urlPrev=document.getElementById('logo-url-prev');
+      if(urlPrev)urlPrev.style.display='none';
+    };img.src=e.target.result;
+  };reader.readAsDataURL(f);
 }
+
 async function saveLogo(){
-  const b64=document.getElementById('logo-drop')?.dataset?.b64;if(!b64){toast('اختر صورة أولاً');return;}
-  if(!DATA.clinicInfo)DATA.clinicInfo={};DATA.clinicInfo.logoUrl=b64;await save(DATA);
+  if(!DATA.clinicInfo)DATA.clinicInfo={};
+  // الأولوية: رابط Cloudinary ← Base64 من الرفع
+  const urlVal=document.getElementById('logo-url')?.value.trim();
+  const b64Val=document.getElementById('logo-drop')?.dataset?.b64;
+  const logoUrl=urlVal||b64Val||'';
+  if(!logoUrl){toast('أدخل رابطاً أو ارفع صورة أولاً');return;}
+  DATA.clinicInfo.logoUrl=logoUrl;
+  await save(DATA);
 }
 
 /* ── EXPORT DB.JS ── */
