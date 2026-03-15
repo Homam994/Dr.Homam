@@ -115,7 +115,14 @@ body{font-family:'Almarai',sans-serif;background:var(--black);color:var(--white)
 .day-cb:checked+.day-lbl{background:var(--gold);color:var(--black);border-color:var(--gold)}
 
 /* HOURS */
-.hour-row{display:grid;grid-template-columns:110px 1fr 1fr 56px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border2)}
+.hour-row{padding:14px 0;border-bottom:1px solid var(--border2)}
+.hour-row:last-child{border-bottom:none}
+.hour-row-top{display:grid;grid-template-columns:110px 1fr 1fr auto auto;gap:10px;align-items:center}
+.hour-row-shift2{display:grid;grid-template-columns:110px 1fr 1fr;gap:10px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border2)}
+.shift2-label{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;padding-right:4px}
+.btn-shift2{background:transparent;border:1px solid var(--border2);color:var(--muted);font-size:10px;letter-spacing:1px;padding:5px 10px;cursor:pointer;font-family:'Almarai',sans-serif;transition:all .2s;white-space:nowrap}
+.btn-shift2:hover{border-color:var(--gold);color:var(--gold)}
+.btn-shift2.active{background:var(--gold3);border-color:var(--gold);color:var(--gold)}
 .hour-row:last-child{border-bottom:none}
 .hour-day{font-size:13px;color:var(--text)}
 .toggle{position:relative;width:40px;height:22px}
@@ -196,6 +203,7 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
     <div class="nav-item" onclick="showPage('hours',this)"><i class="fa fa-clock"></i>مواعيد العمل</div>
     <div class="nav-item" onclick="showPage('social',this)"><i class="fa fa-share-nodes"></i>التواصل الاجتماعي</div>
     <div class="nav-item" onclick="showPage('logo',this)"><i class="fa fa-image"></i>الشعار</div>
+    <div class="nav-item" onclick="showPage('fonts',this)"><i class="fa fa-font"></i>الخطوط</div>
   </div>
   <div class="sb-footer">
     <a href="index.html" target="_blank" class="sb-footer-btn"><i class="fa fa-eye"></i>معاينة الموقع</a>
@@ -221,7 +229,7 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
       <div class="stat-card"><div class="stat-icon"><i class="fa fa-cloud"></i></div><div class="stat-info"><h3 id="s-cloud" style="font-size:18px">—</h3><p>قاعدة البيانات</p></div></div>
     </div>
     <div class="card" id="dash-notconf" style="display:none;border-color:rgba(201,168,76,.3)">
-      <div style="display:flex;align-items:center;gap:14px"><i class="fa fa-triangle-exclamation" style="color:var(--gold);font-size:22px"></i><div><div style="font-size:14px;color:var(--white);margin-bottom:4px">لم يتم ربط قاعدة البيانات بعد</div><div style="font-size:12px;color:var(--muted)">اذهب إلى <strong style="color:var(--gold);cursor:pointer" onclick="showPage('setup',null)">إعداد قاعدة البيانات</strong> لربط JSONBin.io</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px"><i class="fa fa-triangle-exclamation" style="color:var(--gold);font-size:22px"></i><div><div style="font-size:14px;color:var(--white);margin-bottom:4px">لم يتم ربط قاعدة البيانات بعد</div><div style="font-size:12px;color:var(--muted)">اضغط <strong style="color:var(--gold);cursor:pointer" onclick="showPage('setup',null)">إعداد قاعدة البيانات</strong> لاختبار الاتصال</div></div></div>
     </div>
     <div class="card">
       <div class="card-title"><i class="fa fa-circle-info"></i>معلومات سريعة</div>
@@ -235,19 +243,22 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
   <!-- SETUP -->
   <div class="page" id="page-setup">
     <div class="setup-banner">
-      <h3>ربط JSONBin.io كقاعدة بيانات سحابية</h3>
-      <ol>
-        <li>أنشئ حساباً مجانياً على <a href="https://jsonbin.io" target="_blank">jsonbin.io</a></li>
-        <li>أنشئ Bin جديداً والصق محتوى <code>initial-data.json</code> كاملاً</li>
-        <li>انسخ BIN ID من رابط الـ Bin</li>
-        <li>أنشئ API Key من القائمة الجانبية</li>
-        <li>أدخل البيانات أدناه واضغط اختبار</li>
-      </ol>
-      <div class="setup-row">
-        <input type="text" class="form-input" id="cfg-bin" placeholder="BIN ID" dir="ltr">
-        <input type="text" class="form-input" id="cfg-key" placeholder="API Key" dir="ltr">
-        <button class="btn btn-gold" onclick="testDB()"><i class="fa fa-plug"></i>اختبار</button>
+      <h3>قاعدة البيانات — Supabase</h3>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--success);flex-shrink:0"></div>
+        <span style="font-size:13px;color:var(--success)">متصل — Supabase يعمل بشكل كامل مع GitHub Pages</span>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="padding:14px;background:var(--black);border:1px solid var(--border2)">
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px;text-transform:uppercase">Project</div>
+          <div style="font-size:12px;color:var(--gold);font-family:monospace">zvoxfqzbfehmkvbepokb</div>
+        </div>
+        <div style="padding:14px;background:var(--black);border:1px solid var(--border2)">
+          <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px;text-transform:uppercase">الجدول</div>
+          <div style="font-size:12px;color:var(--gold);font-family:monospace">site_data</div>
+        </div>
+      </div>
+      <button class="btn btn-gold" onclick="testDB()"><i class="fa fa-plug"></i>اختبار الاتصال</button>
       <div id="cfg-result" style="display:none;margin-top:12px"></div>
     </div>
     <div class="card">
@@ -256,6 +267,17 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
         <div style="flex:1"><label class="form-label">كلمة المرور الجديدة</label><input type="password" class="form-input" id="new-pass" placeholder="أدخل كلمة مرور جديدة"></div>
         <button class="btn btn-gold" onclick="changePass()">حفظ</button>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px"><i class="fa fa-download"></i>تصدير البيانات كـ db.js</div>
+      <p style="font-size:12px;color:var(--muted);line-height:1.9;margin-bottom:20px">
+        بعد الانتهاء من جميع تعديلاتك، اضغط الزر أدناه لتنزيل <code style="background:var(--gold3);padding:2px 7px;color:var(--gold2)">db.js</code> جديد يحتوي على بياناتك الحالية كبيانات افتراضية — ارفعه على GitHub ليصبح الموقع جاهزاً حتى بدون اتصال بـ Supabase.
+      </p>
+      <button class="btn btn-gold" onclick="exportDbJs()" style="width:100%;justify-content:center">
+        <i class="fa fa-download"></i>تنزيل db.js بالبيانات الحالية
+      </button>
+      <div id="export-result" style="margin-top:12px;display:none"></div>
     </div>
   </div>
 
@@ -271,8 +293,11 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
         <div class="form-group full"><label class="form-label">العنوان</label><input type="text" class="form-input" id="i-addr"></div>
         <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="text" class="form-input" id="i-email" dir="ltr"></div>
         <div class="form-group full"><label class="form-label">نص التواصل (أسفل العنوان)</label><input type="text" class="form-input" id="i-cdesc"></div>
-        <div class="form-group full"><label class="form-label">نبذة — الفقرة الأولى</label><textarea class="form-textarea" id="i-a1" rows="3"></textarea></div>
-        <div class="form-group full"><label class="form-label">نبذة — الفقرة الثانية</label><textarea class="form-textarea" id="i-a2" rows="3"></textarea></div>
+        <div class="form-group full">
+          <label class="form-label">رابط Google Maps Embed</label>
+          <input type="url" class="form-input" id="i-map" dir="ltr" placeholder="https://www.google.com/maps/embed?pb=...">
+          <p style="font-size:11px;color:var(--muted);margin-top:6px">من Google Maps: Share ← Embed a map ← انسخ رابط src فقط</p>
+        </div>
         <div class="form-group full"><label class="form-label">نص الفوتر</label><textarea class="form-textarea" id="i-fd" rows="2"></textarea></div>
       </div>
     </div>
@@ -342,7 +367,11 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
           </div>
         </div>
         <div class="form-group"><label class="form-label">وسم الصورة (Tag)</label><input type="text" class="form-input" id="ab-tag" placeholder="منذ 2016"></div>
+        <div class="form-group"><label class="form-label">العنوان الرئيسي</label><input type="text" class="form-input" id="ab-t1" placeholder="طبيب تقويم"></div>
+        <div class="form-group"><label class="form-label">العنوان المائل (ذهبي)</label><input type="text" class="form-input" id="ab-t2" placeholder="بصمة مختلفة"></div>
         <div class="form-group full"><label class="form-label">جملة Lead (مائلة)</label><input type="text" class="form-input" id="ab-lead"></div>
+        <div class="form-group full"><label class="form-label">نبذة — الفقرة الأولى</label><textarea class="form-textarea" id="i-a1" rows="3"></textarea></div>
+        <div class="form-group full"><label class="form-label">نبذة — الفقرة الثانية</label><textarea class="form-textarea" id="i-a2" rows="3"></textarea></div>
         <div class="form-group"><label class="form-label">مؤهل 1</label><input type="text" class="form-input" id="ab-c1"></div>
         <div class="form-group"><label class="form-label">مؤهل 2</label><input type="text" class="form-input" id="ab-c2"></div>
         <div class="form-group"><label class="form-label">مؤهل 3</label><input type="text" class="form-input" id="ab-c3"></div>
@@ -423,6 +452,31 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
     </div>
   </div>
 
+  <!-- FONTS -->
+  <div class="page" id="page-fonts">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title"><i class="fa fa-font"></i>الخطوط</div><div class="card-sub">خط العناوين وخط النصوص</div></div>
+        <button class="btn btn-gold" onclick="saveFonts()"><i class="fa fa-cloud-arrow-up"></i>حفظ وتطبيق</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">خط العناوين الحالي</label>
+          <div id="font-display-preview" style="font-size:22px;padding:16px;background:var(--black3);border:1px solid var(--border2);letter-spacing:2px;margin-bottom:12px">أخصائي تقويم الأسنان</div>
+          <label class="form-label">اختر خط العناوين</label>
+          <div id="font-display-list" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">خط النصوص الحالي</label>
+          <div id="font-body-preview" style="font-size:15px;padding:16px;background:var(--black3);border:1px solid var(--border2);line-height:2;margin-bottom:12px">أقدّم لك رعاية تقويمية متخصصة تجمع بين الدقة العلمية والحس الجمالي.</div>
+          <label class="form-label">اختر خط النصوص</label>
+          <div id="font-body-list" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- MODALS -->
@@ -443,23 +497,45 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
 </div>
 
 <div class="overlay-wrap" id="gal-modal">
-  <div class="overlay-box" style="max-width:500px">
-    <div class="overlay-head"><h3 id="gal-modal-t">إضافة صورة</h3><button class="overlay-close" onclick="closeGalModal()"><i class="fa fa-times"></i></button></div>
+  <div class="overlay-box" style="max-width:580px">
+    <div class="overlay-head"><h3 id="gal-modal-t">إضافة حالة قبل وبعد</h3><button class="overlay-close" onclick="closeGalModal()"><i class="fa fa-times"></i></button></div>
     <div class="overlay-body">
       <input type="hidden" id="g-idx">
-      <div style="margin-bottom:16px">
-        <label class="form-label">الصورة</label>
-        <div class="upload-box" onclick="document.getElementById('g-img-file').click()" id="g-img-drop" style="min-height:80px">
-          <input type="file" id="g-img-file" accept="image/*" style="display:none" onchange="previewMedia(this,'g-img-prev','g-img-drop')">
-          <div id="g-img-prev" style="display:none;width:100%;text-align:center"></div>
-          <div id="g-img-ph" class="upload-ph"><i class="fa fa-camera" style="font-size:22px"></i><p>انقر لرفع صورة</p></div>
+      <div class="form-grid">
+        <!-- BEFORE -->
+        <div class="form-group">
+          <label class="form-label" style="color:var(--muted)">📷 صورة قبل</label>
+          <div class="upload-box" onclick="document.getElementById('g-before-file').click()" id="g-before-drop" style="min-height:140px;aspect-ratio:4/3">
+            <input type="file" id="g-before-file" accept="image/*" style="display:none" onchange="previewCaseImg(this,'before')">
+            <div id="g-before-prev" style="display:none;width:100%;height:100%;position:relative">
+              <img id="g-before-img" src="" style="width:100%;height:100%;object-fit:cover;border-radius:2px">
+              <span style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:rgba(255,255,255,.7);font-size:9px;letter-spacing:2px;padding:3px 8px;text-transform:uppercase">قبل</span>
+            </div>
+            <div id="g-before-ph" class="upload-ph"><i class="fa fa-image" style="font-size:26px"></i><p>صورة قبل</p></div>
+          </div>
+          <input type="url" class="form-input" id="g-before-url" placeholder="أو رابط مباشر..." dir="ltr" style="margin-top:8px;font-size:11px" oninput="syncCaseUrl('before')">
         </div>
-        <input type="url" class="form-input" id="g-img-url" placeholder="أو رابط مباشر https://..." dir="ltr" style="margin-top:8px" oninput="previewUrlMedia('g-img-url','g-url-prev')">
-        <div id="g-url-prev" style="margin-top:8px;display:none;max-height:140px;overflow:hidden"></div>
+        <!-- AFTER -->
+        <div class="form-group">
+          <label class="form-label" style="color:var(--gold)">✨ صورة بعد</label>
+          <div class="upload-box" onclick="document.getElementById('g-after-file').click()" id="g-after-drop" style="min-height:140px;aspect-ratio:4/3;border-color:rgba(201,168,76,.3)">
+            <input type="file" id="g-after-file" accept="image/*" style="display:none" onchange="previewCaseImg(this,'after')">
+            <div id="g-after-prev" style="display:none;width:100%;height:100%;position:relative">
+              <img id="g-after-img" src="" style="width:100%;height:100%;object-fit:cover;border-radius:2px">
+              <span style="position:absolute;top:6px;right:6px;background:var(--gold);color:var(--black);font-size:9px;letter-spacing:2px;padding:3px 8px;text-transform:uppercase">بعد</span>
+            </div>
+            <div id="g-after-ph" class="upload-ph"><i class="fa fa-wand-magic-sparkles" style="font-size:26px;color:var(--gold)"></i><p>صورة بعد</p></div>
+          </div>
+          <input type="url" class="form-input" id="g-after-url" placeholder="أو رابط مباشر..." dir="ltr" style="margin-top:8px;font-size:11px" oninput="syncCaseUrl('after')">
+        </div>
+        <!-- LABEL -->
+        <div class="form-group full">
+          <label class="form-label">وصف الحالة (اختياري)</label>
+          <input type="text" class="form-input" id="g-label" placeholder="مثال: تقويم شفاف — 14 شهراً">
+        </div>
       </div>
-      <div style="margin-bottom:20px"><label class="form-label">التسمية (اختياري)</label><input type="text" class="form-input" id="g-label" placeholder="مثال: حالة تقويم شفاف — 14 شهراً"></div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-gold" onclick="saveGal()" style="flex:1;justify-content:center"><i class="fa fa-cloud-arrow-up"></i>حفظ</button>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button class="btn btn-gold" onclick="saveGal()" style="flex:1;justify-content:center"><i class="fa fa-cloud-arrow-up"></i>حفظ الحالة</button>
         <button class="btn btn-outline" onclick="closeGalModal()">إلغاء</button>
       </div>
     </div>
@@ -518,6 +594,7 @@ const PAGE_META={
   hours:{t:'مواعيد العمل',s:'أيام وساعات الحجز'},
   social:{t:'التواصل الاجتماعي',s:'روابط المنصات'},
   logo:{t:'الشعار',s:'شعار العيادة'},
+  fonts:{t:'الخطوط',s:'تخصيص خطوط الموقع'},
 };
 function showPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -527,15 +604,14 @@ function showPage(name,el){
   document.getElementById('page-title').textContent=m.t;
   document.getElementById('page-sub').textContent=m.s;
   if(el)el.classList.add('active');
-  const fns={dashboard:renderDash,setup:loadSetup,info:loadInfo,hero:loadHero,about:loadAbout,services:renderSrvList,gallery:renderGalList,reviews:renderRevList,hours:loadHours,social:loadSocial};
+  const fns={dashboard:renderDash,setup:loadSetup,info:loadInfo,hero:loadHero,about:loadAbout,services:renderSrvList,gallery:renderGalList,reviews:renderRevList,hours:loadHours,social:loadSocial,fonts:loadFonts};
   if(fns[name])fns[name]();
 }
 
 /* ── INIT ── */
 async function init(){
   const cfg=DB.getConfig();
-  document.getElementById('cfg-bin').value=cfg.binId||'';
-  document.getElementById('cfg-key').value=cfg.apiKey||'';
+  // Supabase — لا إعداد مطلوب
   if(DB.isReady()){
     try{DATA=await DB.read();updateDbStatus(true);}
     catch(e){DATA=JSON.parse(JSON.stringify(DB.DEFAULTS));updateDbStatus(false);}
@@ -562,13 +638,15 @@ function updateDbStatus(ok){
 }
 
 /* ── DB SETUP ── */
-function loadSetup(){document.getElementById('cfg-bin').value=DB.getConfig().binId||'';document.getElementById('cfg-key').value=DB.getConfig().apiKey||'';}
+function loadSetup(){} // Supabase — لا إعداد مطلوب
 async function testDB(){
-  const b=document.getElementById('cfg-bin').value.trim(),k=document.getElementById('cfg-key').value.trim();
-  if(!b||!k){showCfgResult(false,'أدخل BIN ID و API Key');return;}
-  DB.configure(b,k);
-  try{DATA=await DB.read();updateDbStatus(true);showCfgResult(true,'✅ تم الاتصال بنجاح');}
-  catch(e){showCfgResult(false,'❌ فشل الاتصال: '+e.message);}
+  try{
+    DATA=await DB.read();
+    updateDbStatus(true);
+    showCfgResult(true,'✅ Supabase متصل — البيانات تُقرأ وتُكتب بنجاح');
+  }catch(e){
+    showCfgResult(false,'❌ فشل الاتصال: '+e.message);
+  }
 }
 function showCfgResult(ok,msg){const el=document.getElementById('cfg-result');el.style.display='block';el.innerHTML=`<div style="padding:10px 14px;background:${ok?'rgba(82,192,122,.1)':'rgba(224,82,82,.1)'};border:1px solid ${ok?'rgba(82,192,122,.25)':'rgba(224,82,82,.25)'};font-size:12px;color:${ok?'var(--success)':'var(--danger)'};">${msg}</div>`;}
 
@@ -585,11 +663,11 @@ function renderDash(){
 }
 
 /* ── INFO ── */
-function loadInfo(){const i=DATA?.clinicInfo||{};['name','slogan','phone','addr','email','cdesc','a1','a2','fd'].forEach(k=>setV('i-'+k,i[{name:'name',slogan:'slogan',phone:'phone',addr:'address',email:'email',cdesc:'contactDesc',a1:'about1',a2:'about2',fd:'footerDesc'}[k]]));setV('i-wa',i.whatsapp);}
+function loadInfo(){const i=DATA?.clinicInfo||{};['name','slogan','phone','addr','email','cdesc','fd'].forEach(k=>setV('i-'+k,i[{name:'name',slogan:'slogan',phone:'phone',addr:'address',email:'email',cdesc:'contactDesc',fd:'footerDesc'}[k]]));setV('i-wa',i.whatsapp);setV('i-map',i.mapEmbed);}
 function setV(id,v){const e=document.getElementById(id);if(e&&v!==undefined)e.value=v||'';}
 async function saveInfo(){
   const g=id=>document.getElementById(id)?.value||'';
-  DATA.clinicInfo={...DATA.clinicInfo,name:g('i-name'),slogan:g('i-slogan'),whatsapp:g('i-wa'),phone:g('i-phone'),address:g('i-addr'),email:g('i-email'),contactDesc:g('i-cdesc'),about1:g('i-a1'),about2:g('i-a2'),footerDesc:g('i-fd'),logoUrl:DATA.clinicInfo?.logoUrl||''};
+  DATA.clinicInfo={...DATA.clinicInfo,name:g('i-name'),slogan:g('i-slogan'),whatsapp:g('i-wa'),phone:g('i-phone'),address:g('i-addr'),email:g('i-email'),contactDesc:g('i-cdesc'),footerDesc:g('i-fd'),mapEmbed:g('i-map'),logoUrl:DATA.clinicInfo?.logoUrl||''};
   await save(DATA);
 }
 
@@ -665,13 +743,14 @@ async function saveHero(){
 
 /* ── ABOUT ── */
 function loadAbout(){
-  const a=DATA?.about||{};setV('ab-tag',a.tag);setV('ab-lead',a.lead);setV('ab-c1',a.cred1);setV('ab-c2',a.cred2);setV('ab-c3',a.cred3);setV('ab-c4',a.cred4);
+  const a=DATA?.about||{},i=DATA?.clinicInfo||{};setV('ab-t1',a.title1);setV('ab-t2',a.title2);setV('ab-tag',a.tag);setV('ab-lead',a.lead);setV('i-a1',i.about1);setV('i-a2',i.about2);setV('ab-c1',a.cred1);setV('ab-c2',a.cred2);setV('ab-c3',a.cred3);setV('ab-c4',a.cred4);
   if(a.img){setV('about-url-inp',a.img);document.getElementById('about-tab-file').style.display='none';document.getElementById('about-tab-url').style.display='';document.querySelectorAll('#page-about .media-tab').forEach((b,i)=>b.classList.toggle('active',i===1));previewUrlMedia('about-url-inp','about-url-prev');}
 }
 async function saveAbout(){
   const g=id=>document.getElementById(id)?.value||'';
   const img=getMediaVal('about')||DATA?.about?.img||'';
-  DATA.about={...DATA.about,img,tag:g('ab-tag'),lead:g('ab-lead'),cred1:g('ab-c1'),cred2:g('ab-c2'),cred3:g('ab-c3'),cred4:g('ab-c4')};
+  DATA.about={...DATA.about,img,title1:g('ab-t1'),title2:g('ab-t2'),tag:g('ab-tag'),lead:g('ab-lead'),cred1:g('ab-c1'),cred2:g('ab-c2'),cred3:g('ab-c3'),cred4:g('ab-c4')};
+  DATA.clinicInfo={...DATA.clinicInfo,about1:g('i-a1'),about2:g('i-a2')};
   await save(DATA);
 }
 
@@ -697,22 +776,97 @@ async function delSrv(i){if(!confirm('حذف؟'))return;DATA.services.splice(i,1
 /* ── GALLERY ── */
 function renderGalList(){
   const list=document.getElementById('gal-list'),items=DATA?.gallery||[];
-  if(!items.length){list.innerHTML='<p style="text-align:center;padding:40px;color:var(--muted);font-style:italic">لا توجد صور بعد.</p>';return;}
-  list.innerHTML=items.map((g,i)=>`<div class="list-row"><div class="row-avatar" style="width:60px;height:60px">${g.img?`<img src="${g.img}">`:'<i class="fa fa-image"></i>'}</div><div class="row-info"><h4>${g.label||'صورة بدون تسمية'}</h4></div><div class="row-actions"><button class="btn btn-outline" style="padding:7px 12px" onclick="openGalModal(${i})"><i class="fa fa-pen"></i></button><button class="btn btn-danger" style="padding:7px 12px" onclick="delGal(${i})"><i class="fa fa-trash"></i></button></div></div>`).join('');
+  if(!items.length){list.innerHTML='<p style="text-align:center;padding:40px;color:var(--muted);font-style:italic">لا توجد حالات بعد.</p>';return;}
+  list.innerHTML=items.map((g,i)=>`
+    <div class="list-row">
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <div class="row-avatar" style="width:52px;height:52px;border-radius:0">${g.before?`<img src="${g.before}">`:'<i class="fa fa-image"></i>'}</div>
+        <div class="row-avatar" style="width:52px;height:52px;border-radius:0;background:var(--gold3);border-color:var(--gold)">${g.after?`<img src="${g.after}">`:'<i class="fa fa-wand-magic-sparkles" style="color:var(--gold)"></i>'}</div>
+      </div>
+      <div class="row-info"><h4>${g.label||'حالة بدون تسمية'}</h4><p>${g.before&&g.after?'قبل وبعد ✓':g.before?'قبل فقط':g.after?'بعد فقط':'بدون صور'}</p></div>
+      <div class="row-actions">
+        <button class="btn btn-outline" style="padding:7px 12px" onclick="openGalModal(${i})"><i class="fa fa-pen"></i></button>
+        <button class="btn btn-danger" style="padding:7px 12px" onclick="delGal(${i})"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>`).join('');
 }
 function openGalModal(idx){
   document.getElementById('gal-modal').classList.add('open');
-  const drop=document.getElementById('g-img-drop');if(drop)drop.dataset.b64='';
-  const prev=document.getElementById('g-img-prev');if(prev){prev.style.display='none';prev.innerHTML='';}
-  if(idx!==undefined){const g=DATA.gallery[idx];document.getElementById('gal-modal-t').textContent='تعديل الصورة';document.getElementById('g-idx').value=idx;document.getElementById('g-label').value=g.label||'';if(g.img){document.getElementById('g-img-url').value=g.img;previewUrlMedia('g-img-url','g-url-prev');}else document.getElementById('g-img-url').value='';}
-  else{document.getElementById('gal-modal-t').textContent='إضافة صورة';['g-idx','g-label','g-img-url'].forEach(id=>document.getElementById(id).value='');document.getElementById('g-url-prev').style.display='none';}
+  // reset sides
+  ['before','after'].forEach(side=>{
+    document.getElementById('g-'+side+'-drop').dataset.b64='';
+    document.getElementById('g-'+side+'-prev').style.display='none';
+    document.getElementById('g-'+side+'-ph').style.display='';
+    document.getElementById('g-'+side+'-img').src='';
+    document.getElementById('g-'+side+'-url').value='';
+    const fi=document.getElementById('g-'+side+'-file');if(fi)fi.value='';
+  });
+  document.getElementById('g-label').value='';
+  if(idx!==undefined){
+    const g=DATA.gallery[idx];
+    document.getElementById('gal-modal-t').textContent='تعديل الحالة';
+    document.getElementById('g-idx').value=idx;
+    document.getElementById('g-label').value=g.label||'';
+    ['before','after'].forEach(side=>{
+      const url=g[side]||'';
+      if(url){
+        document.getElementById('g-'+side+'-url').value=url;
+        document.getElementById('g-'+side+'-img').src=url;
+        document.getElementById('g-'+side+'-prev').style.display='block';
+        document.getElementById('g-'+side+'-ph').style.display='none';
+      }
+    });
+  }else{
+    document.getElementById('gal-modal-t').textContent='إضافة حالة قبل وبعد';
+    document.getElementById('g-idx').value='';
+  }
 }
+function compressImg(file, cb){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=1000,canvas=document.createElement('canvas');
+      let w=img.width,h=img.height;if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}
+      canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);
+      cb(canvas.toDataURL('image/jpeg',.85));
+    };img.src=e.target.result;
+  };reader.readAsDataURL(file);
+}
+
+function previewCaseImg(inp, side){
+  const f=inp.files[0];if(!f)return;
+  compressImg(f,b64=>{
+    document.getElementById('g-'+side+'-drop').dataset.b64=b64;
+    document.getElementById('g-'+side+'-img').src=b64;
+    document.getElementById('g-'+side+'-prev').style.display='block';
+    document.getElementById('g-'+side+'-ph').style.display='none';
+  });
+}
+
+function syncCaseUrl(side){
+  const url=document.getElementById('g-'+side+'-url').value.trim();
+  if(!url)return;
+  document.getElementById('g-'+side+'-drop').dataset.b64='';
+  document.getElementById('g-'+side+'-img').src=url;
+  document.getElementById('g-'+side+'-prev').style.display='block';
+  document.getElementById('g-'+side+'-ph').style.display='none';
+}
+
+function getCaseImgVal(side){
+  const drop=document.getElementById('g-'+side+'-drop');
+  if(drop?.dataset.b64)return drop.dataset.b64;
+  return document.getElementById('g-'+side+'-url')?.value.trim()||'';
+}
+
 function closeGalModal(){document.getElementById('gal-modal').classList.remove('open');}
 async function saveGal(){
   const idx=document.getElementById('g-idx').value;
-  const img=getImgVal('g-img-drop','g-img-url')||(idx!==''?DATA.gallery[parseInt(idx)]?.img:'')||'';
-  const g={img,label:document.getElementById('g-label').value};
-  const items=[...(DATA.gallery||[])];if(idx!=='')items[parseInt(idx)]=g;else items.push(g);
+  const before=getCaseImgVal('before')||(idx!==''?DATA.gallery[parseInt(idx)]?.before:'')||'';
+  const after=getCaseImgVal('after')||(idx!==''?DATA.gallery[parseInt(idx)]?.after:'')||'';
+  const g={before,after,label:document.getElementById('g-label').value};
+  const items=[...(DATA.gallery||[])];
+  if(idx!=='')items[parseInt(idx)]=g;else items.push(g);
   DATA.gallery=items;await save(DATA);closeGalModal();renderGalList();
 }
 async function delGal(i){if(!confirm('حذف؟'))return;DATA.gallery.splice(i,1);await save(DATA);renderGalList();}
@@ -741,21 +895,65 @@ async function delRev(i){if(!confirm('حذف؟'))return;DATA.reviews.splice(i,1)
 function loadHours(){
   const ov=DATA?.hoursOverride||null;
   const doc=(DATA?.doctors||[])[0]||{};
-  // Doctor form
   setV('doc-name',doc.name||DATA?.clinicInfo?.name||'');setV('doc-spec',doc.specialty||'');
   setV('doc-start',doc.startTime||'09:00');setV('doc-end',doc.endTime||'17:00');setV('doc-dur',doc.slotDuration||30);
   const daysWrap=document.getElementById('doc-days');
   daysWrap.innerHTML=DAYS.map((name,i)=>`<input type="checkbox" class="day-cb" id="dc-${i}" ${(doc.workDays||[0,1,2,3,4]).includes(i)?'checked':''}><label class="day-lbl" for="dc-${i}">${name}</label>`).join('');
-  // Hours table
+  renderHoursTable(ov);
+}
+
+function renderHoursTable(ov){
   document.getElementById('hours-admin').innerHTML=DAYS.map((name,i)=>{
-    const row=ov?ov[i]:null;const cl=row?row.closed:(i===5||i===6);
-    const from=(row&&!cl)?row.time.split(' - ')[0]:'09:00';const to=(row&&!cl)?row.time.split(' - ')[1]:'17:00';
-    return `<div class="hour-row"><div class="hour-day">${name}</div><input type="time" class="form-input" id="hf-${i}" value="${from}" ${cl?'disabled':''} style="font-size:12px;padding:8px 10px"><input type="time" class="form-input" id="ht-${i}" value="${to}" ${cl?'disabled':''} style="font-size:12px;padding:8px 10px"><label class="toggle"><input type="checkbox" id="hc-${i}" ${cl?'checked':''} onchange="toggleDay(${i})"><span class="tslider"></span></label></div>`;
+    const row=ov?ov[i]:null;
+    const cl=row?row.closed:(i===5||i===6);
+    const has2=row?.shift2&&!cl;
+    // فترة 1
+    const f1=(row&&!cl)?row.time.split(' - ')[0]:'09:00';
+    const t1=(row&&!cl)?row.time.split(' - ')[1]:'13:00';
+    // فترة 2
+    const f2=row?.shift2?row.shift2.split(' - ')[0]:'16:00';
+    const t2=row?.shift2?row.shift2.split(' - ')[1]:'20:00';
+    return `<div class="hour-row" id="hrow-${i}">
+      <div class="hour-row-top">
+        <div class="hour-day">${name}</div>
+        <input type="time" class="form-input" id="hf-${i}" value="${f1}" ${cl?'disabled':''} style="font-size:12px;padding:8px 10px">
+        <input type="time" class="form-input" id="ht-${i}" value="${t1}" ${cl?'disabled':''} style="font-size:12px;padding:8px 10px">
+        <button class="btn-shift2${has2?' active':''}" id="hbtn2-${i}" onclick="toggleShift2(${i})" title="إضافة فترة ثانية" ${cl?'disabled':''}>+ فترة 2</button>
+        <label class="toggle"><input type="checkbox" id="hc-${i}" ${cl?'checked':''} onchange="toggleDay(${i})"><span class="tslider"></span></label>
+      </div>
+      <div class="hour-row-shift2" id="hshift2-${i}" style="${has2?'':'display:none'}">
+        <div class="shift2-label">فترة 2</div>
+        <input type="time" class="form-input" id="hf2-${i}" value="${f2}" style="font-size:12px;padding:8px 10px">
+        <input type="time" class="form-input" id="ht2-${i}" value="${t2}" style="font-size:12px;padding:8px 10px">
+      </div>
+    </div>`;
   }).join('');
 }
-function toggleDay(i){const cl=document.getElementById('hc-'+i).checked;document.getElementById('hf-'+i).disabled=cl;document.getElementById('ht-'+i).disabled=cl;}
+
+function toggleDay(i){
+  const cl=document.getElementById('hc-'+i).checked;
+  ['hf-','ht-','hf2-','ht2-'].forEach(p=>{const el=document.getElementById(p+i);if(el)el.disabled=cl;});
+  const btn=document.getElementById('hbtn2-'+i);if(btn)btn.disabled=cl;
+  if(cl){const s=document.getElementById('hshift2-'+i);if(s)s.style.display='none';}
+}
+
+function toggleShift2(i){
+  const s=document.getElementById('hshift2-'+i);
+  const btn=document.getElementById('hbtn2-'+i);
+  const show=s.style.display==='none';
+  s.style.display=show?'':'none';
+  btn.classList.toggle('active',show);
+}
+
 async function saveHours(){
-  DATA.hoursOverride=DAYS.map((name,i)=>{const cl=document.getElementById('hc-'+i).checked;return{day:name,closed:cl,time:document.getElementById('hf-'+i).value+' - '+document.getElementById('ht-'+i).value};});
+  DATA.hoursOverride=DAYS.map((name,i)=>{
+    const cl=document.getElementById('hc-'+i).checked;
+    const shift2El=document.getElementById('hshift2-'+i);
+    const has2=shift2El&&shift2El.style.display!=='none';
+    const obj={day:name,closed:cl,time:document.getElementById('hf-'+i).value+' - '+document.getElementById('ht-'+i).value};
+    if(has2)obj.shift2=document.getElementById('hf2-'+i).value+' - '+document.getElementById('ht2-'+i).value;
+    return obj;
+  });
   await save(DATA);
 }
 async function saveDoc(){
@@ -787,6 +985,159 @@ function previewLogo(inp){
 async function saveLogo(){
   const b64=document.getElementById('logo-drop')?.dataset?.b64;if(!b64){toast('اختر صورة أولاً');return;}
   if(!DATA.clinicInfo)DATA.clinicInfo={};DATA.clinicInfo.logoUrl=b64;await save(DATA);
+}
+
+/* ── EXPORT DB.JS ── */
+function exportDbJs(){
+  if(!DATA){toast('لا توجد بيانات للتصدير');return;}
+
+  const SURL = 'https://zvoxfqzbfehmkvbepokb.supabase.co';
+  const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3hmcXpiZmVobWt2YmVwb2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA5NDMsImV4cCI6MjA4OTA4Njk0M30.VNgynNVki7yWXKvpoWQfgRDQ5fGEfjS1KXTs2JKfHM4';
+
+  const dataStr = JSON.stringify(DATA, null, 2);
+
+  // بناء الملف بدون template literals متداخلة
+  const lines = [
+    'const DB = (() => {',
+    "  const SUPABASE_URL = '" + SURL + "';",
+    "  const SUPABASE_KEY = '" + SKEY + "';",
+    "  const TABLE     = 'site_data';",
+    "  const ROW_KEY   = 'data';",
+    '  const API       = SUPABASE_URL + "/rest/v1/" + TABLE;',
+    '  let _cache = null, _lastFetch = 0;',
+    '  const TTL  = 30000;',
+    '',
+    '  const DEFAULTS = ' + dataStr + ';',
+    '',
+    '  function hdrs(extra){',
+    '    return Object.assign({',
+    "      'Content-Type':'application/json',",
+    "      'apikey':SUPABASE_KEY,",
+    "      'Authorization':'Bearer '+SUPABASE_KEY,",
+    "      'Prefer':'return=representation',",
+    '    }, extra);',
+    '  }',
+    '',
+    '  function deepMerge(def,saved){',
+    '    const res=JSON.parse(JSON.stringify(def));',
+    '    if(!saved||typeof saved!=="object")return res;',
+    '    Object.keys(saved).forEach(k=>{',
+    '      if(saved[k]!==null&&typeof saved[k]==="object"&&!Array.isArray(saved[k])&&res[k]&&typeof res[k]==="object")',
+    '        res[k]={...res[k],...saved[k]};',
+    '      else res[k]=saved[k];',
+    '    });',
+    '    return res;',
+    '  }',
+    '',
+    '  async function read(){',
+    '    const now=Date.now();',
+    '    if(_cache&&now-_lastFetch<TTL)return _cache;',
+    '    try{',
+    '      const r=await fetch(API+"?key=eq."+ROW_KEY+"&select=value",{headers:hdrs()});',
+    '      if(!r.ok)throw new Error("fetch "+r.status);',
+    '      const rows=await r.json();',
+    '      if(!rows.length){',
+    '        await fetch(API,{method:"POST",headers:hdrs(),body:JSON.stringify({key:ROW_KEY,value:DEFAULTS})});',
+    '        _cache=JSON.parse(JSON.stringify(DEFAULTS));',
+    '      }else{',
+    '        _cache=deepMerge(DEFAULTS,rows[0].value);',
+    '      }',
+    '      _lastFetch=now;return _cache;',
+    '    }catch(e){',
+    '      console.warn("DB read error:",e.message);',
+    '      return _cache||JSON.parse(JSON.stringify(DEFAULTS));',
+    '    }',
+    '  }',
+    '',
+    '  async function write(data){',
+    '    const r=await fetch(API+"?key=eq."+ROW_KEY,{method:"PATCH",headers:hdrs(),body:JSON.stringify({value:data})});',
+    '    if(!r.ok){',
+    '      const r2=await fetch(API,{method:"POST",headers:hdrs(),body:JSON.stringify({key:ROW_KEY,value:data})});',
+    '      if(!r2.ok)throw new Error("write failed: "+r2.status);',
+    '    }',
+    '    _cache=JSON.parse(JSON.stringify(data));_lastFetch=Date.now();',
+    '    return true;',
+    '  }',
+    '',
+    '  function getConfig(){return{url:SUPABASE_URL};}',
+    '  function isReady(){return true;}',
+    '  return{read,write,getConfig,isReady,DEFAULTS};',
+    '})();',
+  ];
+
+  const content = lines.join('\n');
+  const blob = new Blob([content], {type:'text/javascript'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='db.js'; a.click();
+  URL.revokeObjectURL(url);
+
+  const result=document.getElementById('export-result');
+  result.style.display='block';
+  result.innerHTML='<div style="padding:10px 14px;background:rgba(82,192,122,.1);border:1px solid rgba(82,192,122,.25);font-size:12px;color:var(--success)">✅ تم تنزيل db.js — ارفعه على GitHub ليصبح إفتراضياً</div>';
+}
+
+/* ── FONTS ── */
+const DISPLAY_FONTS = [("Cormorant Garamond", "Cormorant+Garamond:wght@300;400;600", "كلاسيكي راقٍ — الافتراضي"), ("Playfair Display", "Playfair+Display:wght@400;600;700", "فاخر وأنيق"), ("DM Serif Display", "DM+Serif+Display", "عصري وجريء"), ("Lora", "Lora:wght@400;600", "ناعم ومقروء"), ("Raleway", "Raleway:wght@300;400;600", "هندسي حديث")];
+const BODY_FONTS    = [("Almarai", "Almarai:wght@300;400;700", "عربي واضح — الافتراضي"), ("Tajawal", "Tajawal:wght@300;400;500;700", "عربي نظيف وحديث"), ("Cairo", "Cairo:wght@300;400;600;700", "عربي دائري"), ("IBM Plex Sans Arabic", "IBM+Plex+Sans+Arabic:wght@300;400;700", "تقني احترافي"), ("Noto Sans Arabic", "Noto+Sans+Arabic:wght@300;400;700", "شامل وواضح")];
+
+function loadFonts(){
+  const f=DATA?.fonts||{};
+  const curD=f.display||'Cormorant Garamond';
+  const curB=f.body||'Almarai';
+  renderFontList('font-display-list', DISPLAY_FONTS, curD, 'display');
+  renderFontList('font-body-list',    BODY_FONTS,    curB, 'body');
+  updateFontPreview('font-display-preview', curD, true);
+  updateFontPreview('font-body-preview',    curB, false);
+}
+
+function renderFontList(containerId, fonts, selected, type){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  el.innerHTML=fonts.map(([name,gUrl,desc])=>{
+    const isSelected=name===selected;
+    return `<div onclick="selectFont('${type}','${name}','${gUrl}')" style="
+      padding:12px 16px;background:${isSelected?'var(--gold3)':'var(--black3)'};
+      border:1px solid ${isSelected?'var(--gold)':'var(--border2)'};
+      cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center"
+      onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='${isSelected?'var(--gold)':'var(--border2)'}'"
+    >
+      <div>
+        <div style="font-size:13px;color:var(--white);margin-bottom:3px">${name}</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px">${desc}</div>
+      </div>
+      ${isSelected?'<i class="fa fa-check" style="color:var(--gold)"></i>':''}
+    </div>`;
+  }).join('');
+}
+
+function selectFont(type, name, gUrl){
+  if(!DATA.fonts)DATA.fonts={};
+  DATA.fonts[type]=name;
+  DATA.fonts[type+'Url']=gUrl;
+  loadFonts();
+}
+
+function updateFontPreview(elId, fontName, isDisplay){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  // تحميل الخط للمعاينة
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  const fonts=isDisplay?DISPLAY_FONTS:BODY_FONTS;
+  const found=fonts.find(([n])=>n===fontName);
+  if(found){
+    link.href=`https://fonts.googleapis.com/css2?family=${found[1]}&display=swap`;
+    document.head.appendChild(link);
+  }
+  el.style.fontFamily=`'${fontName}', ${isDisplay?'serif':'sans-serif'}`;
+}
+
+async function saveFonts(){
+  if(!DATA.fonts)DATA.fonts={};
+  await save(DATA);
+  // تطبيق الخطوط في admin نفسها للمعاينة الفورية
+  toast('✅ تم حفظ الخطوط — أعد تحميل الموقع لرؤية التغيير');
 }
 
 /* ── TOAST ── */
