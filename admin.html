@@ -1078,8 +1078,22 @@ function exportDbJs(){
 }
 
 /* ── FONTS ── */
-const DISPLAY_FONTS = [("Cormorant Garamond", "Cormorant+Garamond:wght@300;400;600", "كلاسيكي راقٍ — الافتراضي"), ("Playfair Display", "Playfair+Display:wght@400;600;700", "فاخر وأنيق"), ("DM Serif Display", "DM+Serif+Display", "عصري وجريء"), ("Lora", "Lora:wght@400;600", "ناعم ومقروء"), ("Raleway", "Raleway:wght@300;400;600", "هندسي حديث")];
-const BODY_FONTS    = [("Almarai", "Almarai:wght@300;400;700", "عربي واضح — الافتراضي"), ("Tajawal", "Tajawal:wght@300;400;500;700", "عربي نظيف وحديث"), ("Cairo", "Cairo:wght@300;400;600;700", "عربي دائري"), ("IBM Plex Sans Arabic", "IBM+Plex+Sans+Arabic:wght@300;400;700", "تقني احترافي"), ("Noto Sans Arabic", "Noto+Sans+Arabic:wght@300;400;700", "شامل وواضح")];
+const DISPLAY_FONTS = [
+  ["Almarai",              "Almarai:wght@300;400;700;800",              "الافتراضي — رفيع وأنيق"],
+  ["Cairo",                "Cairo:wght@300;400;600;700",                "دائري وفاخر"],
+  ["Tajawal",              "Tajawal:wght@200;300;400;700",              "نظيف وعصري"],
+  ["IBM Plex Sans Arabic", "IBM+Plex+Sans+Arabic:wght@200;300;400;700", "تقني راقٍ"],
+  ["Noto Naskh Arabic",    "Noto+Naskh+Arabic:wght@400;500;600;700",    "نسخي كلاسيكي فاخر"],
+  ["Lateef",               "Lateef:wght@300;400;500;600;700",           "نسخي أنيق للعناوين"],
+];
+const BODY_FONTS = [
+  ["Almarai",              "Almarai:wght@300;400;700",                  "الافتراضي — واضح ومريح"],
+  ["Tajawal",              "Tajawal:wght@300;400;500;700",              "خفيف وسهل القراءة"],
+  ["Cairo",                "Cairo:wght@300;400;600",                    "دائري ومقروء"],
+  ["IBM Plex Sans Arabic", "IBM+Plex+Sans+Arabic:wght@300;400;700",     "تقني احترافي"],
+  ["Noto Sans Arabic",     "Noto+Sans+Arabic:wght@300;400;700",         "شامل ومتوافق"],
+  ["Noto Kufi Arabic",     "Noto+Kufi+Arabic:wght@300;400;700",         "كوفي حديث مميز"],
+];
 
 function loadFonts(){
   const f=DATA?.fonts||{};
