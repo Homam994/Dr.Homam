@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>د. محمدهمام السمان — أخصائي تقويم الأسنان</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -660,7 +661,7 @@ function applyAll(){
 
   /* title */
   if(i.name)document.title=i.name+' — أخصائي تقويم الأسنان';
-  // شعار الـ navbar
+  // شعار الـ navbar + favicon
   if(i.logoUrl){
     const wrap=document.getElementById('nav-logo-wrap');
     const img=document.getElementById('nav-logo-img');
@@ -668,9 +669,11 @@ function applyAll(){
     if(wrap&&img){
       img.src=i.logoUrl;
       wrap.style.display='flex';
-      // إخفاء النص إذا وُجد شعار
       if(textWrap)textWrap.style.display='none';
     }
+    // تطبيق الشعار كـ favicon
+    const favicon=document.getElementById('favicon');
+    if(favicon)favicon.href=i.logoUrl;
   }
 }
 
