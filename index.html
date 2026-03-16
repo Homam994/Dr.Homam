@@ -313,6 +313,28 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
   .footer-inner{gap:36px}
   .time-slots{grid-template-columns:repeat(3,1fr)}
 }
+
+/* ── إصلاح iOS: إلغاء letter-spacing على النصوص العربية ── */
+/* letter-spacing يُشوّه العربية على Safari/iOS */
+*:lang(ar), [dir="rtl"] * {
+  letter-spacing: 0 !important;
+}
+/* نُعيد letter-spacing فقط للعناصر اللاتينية الصريحة */
+[dir="rtl"] .nav-logo-title,
+[dir="rtl"] .hero-eyebrow span,
+[dir="rtl"] .sec-label span,
+[dir="rtl"] .sec-badge,
+[dir="rtl"] .compare-tag,
+[dir="rtl"] .about-tag,
+[dir="rtl"] .footer-brand-title,
+[dir="rtl"] .footer-col h4,
+[dir="rtl"] .hero-stat-label,
+[dir="rtl"] .scroll-indicator span,
+[dir="rtl"] .map-empty p,
+[dir="rtl"] .btn-shift2,
+[dir="rtl"] .cal-day-hdr {
+  letter-spacing: normal !important;
+}
 </style>
 </head>
 <body>
