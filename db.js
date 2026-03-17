@@ -9,7 +9,7 @@ const DB = (() => {
 
   const DEFAULTS = {
   "clinicInfo": {
-    "name": "د. محمدهُمام السمان",
+    "name": "د. محمد همام السمان",
     "slogan": "أخصائي تقويم الأسنان",
     "whatsapp": "966554385134",
     "phone": "0554385134",
