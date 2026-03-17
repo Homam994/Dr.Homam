@@ -3,7 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>د. محمدهمام السمان — أخصائي تقويم الأسنان</title>
+<title>د. محمدهمام السمان — أخصائي تقويم الأسنان | بريدة</title>
+
+<!-- SEO أساسي -->
+<meta name="description" content="د. محمد همام السمان — أخصائي تقويم الأسنان والفكين في بريدة. ماجستير سريري، خبرة 6 سنوات. تقويم معدني، شفاف، وأسنان الأطفال. احجز استشارة مجانية.">
+<meta name="keywords" content="طبيب تقويم بريدة، تقويم أسنان بريدة، أخصائي تقويم، هارموني سمايل، د محمد همام السمان">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://drhomam.vercel.app/">
+
+<!-- Open Graph (واتساب وتويتر والفيسبوك) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:title" content="د. محمدهمام السمان — أخصائي تقويم الأسنان | بريدة">
+<meta property="og:description" content="أخصائي تقويم الأسنان والفكين في بريدة — ماجستير سريري، تقنيات حديثة، استشارة مجانية.">
+<meta property="og:image" content="https://res.cloudinary.com/dwzew575i/image/upload/v1773524151/unnamed_u8sguf_mcjawq.jpg">
+<meta property="og:url" content="https://homam994.github.io/">
+<meta property="og:site_name" content="د. محمدهمام السمان">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="د. محمدهمام السمان — أخصائي تقويم الأسنان">
+<meta name="twitter:description" content="أخصائي تقويم الأسنان والفكين في بريدة. احجز موعدك الآن.">
+<meta name="twitter:image" content="https://res.cloudinary.com/dwzew575i/image/upload/v1773524151/unnamed_u8sguf_mcjawq.jpg">
+
+<!-- Schema.org — Physician -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Physician",
+  "name": "د. محمدهمام السمان",
+  "alternateName": "Dr. Homamalsamman",
+  "description": "أخصائي تقويم الأسنان والفكين — ماجستير سريري، خبرة أكثر من 6 سنوات",
+  "medicalSpecialty": "Dentistry",
+  "url": "https://homam994.github.io/",
+  "image": "https://res.cloudinary.com/dwzew575i/image/upload/v1773524151/unnamed_u8sguf_mcjawq.jpg",
+  "telephone": "+966554385134",
+  "email": "homam.alsmman@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "عيادات هارموني سمايل",
+    "addressLocality": "بريدة",
+    "addressRegion": "القصيم",
+    "addressCountry": "SA"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "26.3951662",
+    "longitude": "43.9205165"
+  },
+  "sameAs": [
+    "https://www.instagram.com/dr.homamalsamman",
+    "https://www.tiktok.com/@dr.homamalsamman"
+  ],
+  "availableService": [
+    {"@type": "MedicalTherapy", "name": "تقويم معدني"},
+    {"@type": "MedicalTherapy", "name": "تقويم شفاف"},
+    {"@type": "MedicalTherapy", "name": "تقويم أسنان الأطفال"},
+    {"@type": "MedicalTherapy", "name": "تقويم الأسنان الخلفي"}
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
@@ -78,6 +135,17 @@ nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bot
 .nav-links a:hover{color:var(--white)}
 .nav-links a::after{content:'';position:absolute;bottom:-4px;right:0;width:0;height:1px;background:var(--gold);transition:width .3s}
 .nav-links a:hover::after{width:100%}
+/* ── HAMBURGER ── */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;z-index:1001}
+.hamburger span{display:block;width:24px;height:1.5px;background:var(--white);transition:all .3s}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;inset:0;z-index:999;background:rgba(10,10,10,.97);backdrop-filter:blur(16px);flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{text-decoration:none;font-size:20px;font-weight:300;color:var(--text-muted);padding:14px 32px;transition:color .2s;letter-spacing:0;width:100%;text-align:center;border-bottom:1px solid var(--border2)}
+.mobile-menu a:hover{color:var(--white)}
+.mobile-menu a:last-child{background:var(--gold);color:var(--black)!important;font-weight:700;border:none;margin-top:16px;width:auto;border-radius:0}
 .btn-book-nav{background:transparent!important;border:1px solid var(--gold)!important;color:var(--gold)!important;padding:9px 22px;border-radius:0!important;font-size:12px!important;letter-spacing:2px!important;text-transform:uppercase;transition:all .3s!important}
 .btn-book-nav::after{display:none!important}
 .btn-book-nav:hover{background:var(--gold)!important;color:var(--black)!important}
@@ -286,6 +354,7 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
 
 /* ── RESPONSIVE ── */
 @media(max-width:960px){
+  .hamburger{display:flex}
   /* Hero — الصورة كخلفية كاملة مثل الكومبيوتر */
   .hero{min-height:100vh}
   .hero-content{margin-right:0;padding-top:80px;padding-bottom:60px;position:relative;z-index:2}
@@ -364,8 +433,21 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
       <li><a href="#booking">التواصل</a></li>
       <li><a href="#" class="btn-book-nav" onclick="openBooking();return false">احجز موعد</a></li>
     </ul>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="القائمة">
+        <span></span><span></span><span></span>
+      </button>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about"      onclick="closeMenu()">من أنا</a>
+  <a href="#gallery"    onclick="closeMenu()">قبل وبعد</a>
+  <a href="#services"   onclick="closeMenu()">الخدمات</a>
+  <a href="#reviews"    onclick="closeMenu()">التقييمات</a>
+  <a href="#booking"    onclick="closeMenu()">التواصل</a>
+  <a href="#" onclick="openBooking();closeMenu();return false">احجز موعد</a>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="home">
@@ -592,6 +674,19 @@ function buildMedia(url,style){
   if(vm)return`<iframe src="https://player.vimeo.com/video/${vm[1]}?autoplay=1&muted=1&loop=1&background=1" style="${style};border:none" allowfullscreen></iframe>`;
   if(isVideo(url))return`<video src="${url}" style="${style}" autoplay muted loop playsinline></video>`;
   return`<img src="${url}" alt="" style="${style}">`;
+}
+
+function toggleMenu(){
+  const h=document.getElementById('hamburger');
+  const m=document.getElementById('mobile-menu');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+}
+function closeMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 function applyFonts(){
