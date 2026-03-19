@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الحجوزات</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--black:#0A0A0A;--black2:#111;--black3:#181818;--white:#FAFAF8;--gold:#C9A84C;--gold2:#E8C97A;--gold3:rgba(201,168,76,.15);--border:rgba(201,168,76,.2);--border2:rgba(250,250,248,.07);--text:rgba(250,250,248,.85);--muted:rgba(250,250,248,.4);--danger:#e05252;--success:#52c07a;--pending:#f0a500}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Almarai',sans-serif;background:var(--black);color:var(--white);min-height:100vh}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;align-items:center;justify-content:center}
+.login-box{width:400px;max-width:95vw;border:1px solid var(--border);padding:48px 40px;position:relative}
+.login-box::before{content:'';position:absolute;top:0;right:0;width:40px;height:40px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.login-box::after{content:'';position:absolute;bottom:0;left:0;width:40px;height:40px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.login-title{font-size:22px;font-weight:300;letter-spacing:2px;margin-bottom:6px}
+.login-sub{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:32px}
+.login-err{color:var(--danger);font-size:12px;margin-bottom:12px;display:none}
+.inp{width:100%;padding:12px 14px;background:var(--black2);border:1px solid var(--border2);color:var(--white);font-size:14px;font-family:'Almarai',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s}
+.inp:focus{border-color:var(--gold)}
+.btn-login{width:100%;background:var(--gold);color:var(--black);padding:14px;border:none;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Almarai',sans-serif;transition:background .2s;margin-top:4px}
+.btn-login:hover{background:var(--gold2)}
+
+/* HEADER */
+.header{background:var(--black2);border-bottom:1px solid var(--border2);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-size:18px;font-weight:300;letter-spacing:2px}
+.header-title span{color:var(--gold);font-size:11px;letter-spacing:3px;display:block;text-transform:uppercase;margin-top:2px}
+.header-actions{display:flex;align-items:center;gap:12px}
+.badge{padding:4px 12px;font-size:11px;font-weight:700;letter-spacing:1px}
+.badge-pending{background:rgba(240,165,0,.15);color:var(--pending);border:1px solid rgba(240,165,0,.3)}
+
+/* FILTERS */
+.filters{padding:20px 24px;background:var(--black2);border-bottom:1px solid var(--border2);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:7px 18px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:12px;font-family:'Almarai',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:0}
+.filter-btn.active{background:var(--gold);color:var(--black);border-color:var(--gold);font-weight:700}
+.filter-btn:hover:not(.active){border-color:var(--gold);color:var(--gold)}
+.date-inp{padding:7px 12px;background:var(--black3);border:1px solid var(--border2);color:var(--white);font-size:12px;font-family:'Almarai',sans-serif;outline:none}
+.date-inp:focus{border-color:var(--gold)}
+.refresh-btn{padding:7px 14px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;transition:all .2s;margin-right:auto}
+.refresh-btn:hover{color:var(--gold);border-color:var(--gold)}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:1px;background:var(--border2)}
+.stat-item{flex:1;padding:16px 20px;background:var(--black2);text-align:center}
+.stat-num{font-size:24px;font-weight:300;margin-bottom:4px}
+.stat-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.stat-pending .stat-num{color:var(--pending)}
+.stat-confirmed .stat-num{color:var(--success)}
+.stat-cancelled .stat-num{color:var(--danger)}
+
+/* BOOKINGS LIST */
+.bookings-wrap{padding:24px;max-width:1000px;margin:0 auto}
+.booking-card{background:var(--black2);border:1px solid var(--border2);margin-bottom:12px;transition:border-color .2s;position:relative}
+.booking-card:hover{border-color:var(--border)}
+.booking-card.pending{border-right:3px solid var(--pending)}
+.booking-card.confirmed{border-right:3px solid var(--success)}
+.booking-card.cancelled{border-right:3px solid var(--danger);opacity:.6}
+.card-head{padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer}
+.card-avatar{width:42px;height:42px;background:var(--gold3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;flex-shrink:0}
+.card-info{flex:1}
+.card-name{font-size:15px;color:var(--white);font-weight:400}
+.card-meta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;gap:14px;flex-wrap:wrap}
+.card-meta span{display:flex;align-items:center;gap:5px}
+.card-meta i{color:var(--gold);font-size:11px}
+.status-badge{padding:4px 12px;font-size:11px;font-weight:700;letter-spacing:1px;white-space:nowrap}
+.status-pending{background:rgba(240,165,0,.12);color:var(--pending);border:1px solid rgba(240,165,0,.25)}
+.status-confirmed{background:rgba(82,192,122,.12);color:var(--success);border:1px solid rgba(82,192,122,.25)}
+.status-cancelled{background:rgba(224,82,82,.12);color:var(--danger);border:1px solid rgba(224,82,82,.25)}
+.card-actions{border-top:1px solid var(--border2);padding:12px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn-sm{padding:7px 16px;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:'Almarai',sans-serif;transition:all .2s;border:1px solid;display:inline-flex;align-items:center;gap:6px}
+.btn-confirm{background:rgba(82,192,122,.1);color:var(--success);border-color:rgba(82,192,122,.25)}.btn-confirm:hover{background:var(--success);color:var(--black);border-color:var(--success)}
+.btn-cancel{background:rgba(224,82,82,.1);color:var(--danger);border-color:rgba(224,82,82,.2)}.btn-cancel:hover{background:var(--danger);color:white;border-color:var(--danger)}
+.btn-wa{background:rgba(37,211,102,.1);color:#25D366;border-color:rgba(37,211,102,.25)}.btn-wa:hover{background:#25D366;color:var(--black);border-color:#25D366}
+.btn-del{background:transparent;color:var(--muted);border-color:var(--border2);margin-right:auto}.btn-del:hover{color:var(--danger);border-color:var(--danger)}
+.btn-edit{background:var(--gold3);color:var(--gold);border-color:var(--border)}.btn-edit:hover{background:var(--gold);color:var(--black)}
+
+/* EDIT TIME */
+.edit-time-wrap{padding:12px 20px;background:var(--black3);border-top:1px solid var(--border2);display:none;gap:10px;align-items:center;flex-wrap:wrap}
+.edit-time-wrap.open{display:flex}
+.edit-time-wrap input{padding:8px 12px;background:var(--black2);border:1px solid var(--border2);color:var(--white);font-size:13px;font-family:'Almarai',sans-serif;outline:none}
+.edit-time-wrap input:focus{border-color:var(--gold)}
+
+/* EMPTY */
+.empty{text-align:center;padding:80px 20px;color:var(--muted)}
+.empty i{font-size:48px;color:var(--border2);display:block;margin-bottom:16px}
+.empty p{font-size:13px;letter-spacing:1px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:24px;z-index:9999;background:var(--black2);color:var(--text);padding:12px 20px;border:1px solid var(--border);font-size:13px;display:flex;align-items:center;gap:10px;transform:translateX(-200%);transition:transform .4s cubic-bezier(.175,.885,.32,1.275)}
+.toast.show{transform:translateX(0)}
+
+/* LOADING */
+.loading{text-align:center;padding:60px;color:var(--muted)}
+.spin{width:36px;height:36px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Name edit */
+.name-edit-wrap{display:flex;align-items:center;gap:8px}
+.name-edit-inp{background:var(--black3);border:1px solid var(--border2);color:var(--white);padding:6px 10px;font-size:13px;font-family:'Almarai',sans-serif;outline:none;width:160px}
+.name-edit-inp:focus{border-color:var(--gold)}
+/* Blocked slots panel */
+.panel{background:var(--black2);border:1px solid var(--border2);margin:0 24px 24px}
+.panel-head{padding:16px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.panel-head h3{font-size:14px;font-weight:400;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+.panel-head h3 i{color:var(--gold)}
+.panel-body{padding:20px;display:none}
+.panel-body.open{display:block}
+.blocked-grid{display:grid;grid-template-columns:1fr 1fr auto auto;gap:10px;align-items:center;margin-bottom:10px}
+.blocked-item{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--black3);border:1px solid var(--border2);margin-bottom:8px;font-size:13px}
+.blocked-item .bi-label{flex:1;color:var(--text)}
+.blocked-item .bi-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;transition:color .2s}
+.blocked-item .bi-remove:hover{color:var(--danger)}
+.blocked-reason{font-size:11px;color:var(--muted);margin-top:2px}
+
+@media(max-width:600px){
+  .stats-bar{flex-wrap:wrap}
+  .stat-item{flex:1 0 45%}
+  .card-meta{gap:8px}
+  .card-actions{gap:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-title">إدارة الحجوزات</div>
+    <div class="login-sub">لوحة تنسيق المواعيد</div>
+    <p class="login-err" id="login-err">كلمة المرور غير صحيحة</p>
+    <input type="password" class="inp" id="lp" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">دخول</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div id="app" style="display:none">
+<header class="header">
+  <div>
+    <div class="header-title">إدارة الحجوزات <span>لوحة التنسيق</span></div>
+  </div>
+  <div class="header-actions">
+    <span class="badge badge-pending" id="pending-count">0 منتظر</span>
+    <button class="refresh-btn" onclick="loadBookings()" title="تحديث"><i class="fa fa-rotate-right"></i></button>
+    <button onclick="doLogout()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;font-family:'Almarai',sans-serif"><i class="fa fa-right-from-bracket"></i></button>
+  </div>
+</header>
+
+<!-- STATS -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-item stat-pending"><div class="stat-num" id="st-pending">0</div><div class="stat-label">منتظر</div></div>
+  <div class="stat-item stat-confirmed"><div class="stat-num" id="st-confirmed">0</div><div class="stat-label">مؤكد</div></div>
+  <div class="stat-item stat-cancelled"><div class="stat-num" id="st-cancelled">0</div><div class="stat-label">ملغي</div></div>
+  <div class="stat-item"><div class="stat-num" id="st-total">0</div><div class="stat-label">الإجمالي</div></div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all',this)">الكل</button>
+  <button class="filter-btn" onclick="setFilter('pending',this)">منتظر</button>
+  <button class="filter-btn" onclick="setFilter('confirmed',this)">مؤكد</button>
+  <button class="filter-btn" onclick="setFilter('cancelled',this)">ملغي</button>
+  <input type="date" class="date-inp" id="date-filter" onchange="renderBookings()" title="تصفية حسب التاريخ">
+  <button class="refresh-btn" onclick="document.getElementById('date-filter').value='';renderBookings()"><i class="fa fa-xmark"></i> مسح التاريخ</button>
+</div>
+
+<!-- LIST -->
+<!-- BLOCKED SLOTS PANEL -->
+<div class="panel" id="blocked-panel">
+  <div class="panel-head" onclick="togglePanel()">
+    <h3><i class="fa fa-lock"></i>إغلاق أيام أو أوقات محددة</h3>
+    <i class="fa fa-chevron-down" id="panel-chevron"></i>
+  </div>
+  <div class="panel-body" id="panel-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:16px">
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;text-transform:uppercase">التاريخ</div>
+        <input type="date" class="date-inp" id="bl-date" style="width:100%">
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;text-transform:uppercase">الوقت (اختياري — فارغ=إغلاق اليوم كله)</div>
+        <input type="time" class="date-inp" id="bl-time" style="width:100%">
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;text-transform:uppercase">السبب (اختياري)</div>
+        <input type="text" class="date-inp" id="bl-reason" placeholder="مثال: إجازة، مؤتمر..." style="width:100%">
+      </div>
+      <button class="btn-sm btn-confirm" style="height:38px" onclick="addBlock()"><i class="fa fa-plus"></i>إضافة</button>
+    </div>
+    <div id="blocks-list"><div style="color:var(--muted);font-size:13px;padding:10px 0">لا توجد أيام أو أوقات مغلقة</div></div>
+  </div>
+</div>
+
+<div class="bookings-wrap" id="bookings-wrap">
+  <div class="loading"><div class="spin"></div><p>جاري التحميل...</p></div>
+</div>
+</div>
+
+<div class="toast" id="toast"><i class="fa fa-check-circle" style="color:var(--gold)"></i><span id="toast-msg"></span></div>
+
+<script>
+const PASS = 'booking123'; // كلمة مرور لوحة الحجوزات
+const SURL = 'https://zvoxfqzbfehmkvbepokb.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3hmcXpiZmVobWt2YmVwb2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA5NDMsImV4cCI6MjA4OTA4Njk0M30.VNgynNVki7yWXKvpoWQfgRDQ5fGEfjS1KXTs2JKfHM4';
+const HDRS = {'Content-Type':'application/json','apikey':SKEY,'Authorization':'Bearer '+SKEY};
+
+let ALL_BOOKINGS = [];
+let FILTER = 'all';
+
+/* ── AUTH ── */
+function doLogin(){
+  const v=document.getElementById('lp').value;
+  if(v===(localStorage.getItem('bookPass')||PASS)){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    localStorage.setItem('bookAuth','1');
+    loadBookings();
+    // تحديث تلقائي كل 60 ثانية
+    setInterval(loadBookings, 60000);
+  }else{
+    document.getElementById('login-err').style.display='block';
+  }
+}
+function doLogout(){localStorage.removeItem('bookAuth');location.reload();}
+
+/* ── LOAD ── */
+async function loadBookings(){
+  try{
+    const r=await fetch(SURL+'/rest/v1/bookings?order=booking_date.asc,booking_time.asc&select=*',{headers:HDRS});
+    if(!r.ok)throw new Error(r.status);
+    ALL_BOOKINGS=await r.json();
+    updateStats();
+    renderBookings();
+  }catch(e){
+    document.getElementById('bookings-wrap').innerHTML='<div class="empty"><i class="fa fa-wifi"></i><p>تعذّر الاتصال — تحقق من الاتصال بالإنترنت</p></div>';
+  }
+}
+
+/* ── STATS ── */
+function updateStats(){
+  const pending=ALL_BOOKINGS.filter(b=>b.status==='pending').length;
+  const confirmed=ALL_BOOKINGS.filter(b=>b.status==='confirmed').length;
+  const cancelled=ALL_BOOKINGS.filter(b=>b.status==='cancelled').length;
+  document.getElementById('st-pending').textContent=pending;
+  document.getElementById('st-confirmed').textContent=confirmed;
+  document.getElementById('st-cancelled').textContent=cancelled;
+  document.getElementById('st-total').textContent=ALL_BOOKINGS.length;
+  document.getElementById('pending-count').textContent=pending+' منتظر';
+}
+
+/* ── FILTER ── */
+function setFilter(f,btn){
+  FILTER=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBookings();
+}
+
+/* ── RENDER ── */
+function renderBookings(){
+  const dateF=document.getElementById('date-filter').value;
+  let list=ALL_BOOKINGS.filter(b=>{
+    if(FILTER!=='all'&&b.status!==FILTER)return false;
+    if(dateF&&b.booking_date!==dateF)return false;
+    return true;
+  });
+
+  const wrap=document.getElementById('bookings-wrap');
+  if(!list.length){
+    wrap.innerHTML='<div class="empty"><i class="fa fa-calendar-xmark"></i><p>لا توجد حجوزات في هذه الفئة</p></div>';
+    return;
+  }
+
+  const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+  wrap.innerHTML=list.map(b=>{
+    const dt=new Date(b.booking_date+'T12:00:00');
+    const dateStr=DAYS[dt.getDay()]+' '+dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear();
+    const statusLabel={pending:'⏳ منتظر',confirmed:'✅ مؤكد',cancelled:'❌ ملغي'}[b.status]||b.status;
+    const statusClass='status-'+b.status;
+    const cardClass='booking-card '+b.status;
+    const initial=b.patient_name?.[0]||'م';
+
+    return `<div class="${cardClass}" id="card-${b.id}">
+      <div class="card-head" onclick="toggleActions('${b.id}')">
+        <div class="card-avatar">${initial}</div>
+        <div class="card-info">
+          <div class="name-edit-wrap">
+            <div class="card-name" id="name-display-${b.id}">${b.patient_name==='زائر'?'<span style="color:var(--muted);font-style:normal">لم يُحدَّد بعد</span>':b.patient_name}</div>
+            <button onclick="showNameEdit('${b.id}','${(b.patient_name||'').replace(/'/g,'\'')}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;transition:color .2s" title="تعديل الاسم"><i class="fa fa-pen"></i></button>
+          </div>
+          <div class="name-edit-wrap" id="name-edit-${b.id}" style="display:none">
+            <input type="text" class="name-edit-inp" id="name-inp-${b.id}" value="${b.patient_name==='زائر'?'':b.patient_name}" placeholder="اسم المريض">
+            <button class="btn-sm btn-confirm" style="padding:5px 10px" onclick="saveName('${b.id}')"><i class="fa fa-check"></i></button>
+            <button class="btn-sm" style="padding:5px 10px;border-color:var(--border2);color:var(--muted)" onclick="hideNameEdit('${b.id}')"><i class="fa fa-xmark"></i></button>
+          </div>
+          <div class="card-meta">
+            <span><i class="fa fa-phone"></i>${b.patient_phone}</span>
+            <span><i class="fa fa-calendar"></i>${dateStr}</span>
+            <span><i class="fa fa-clock"></i>${b.booking_time}</span>
+            <span><i class="fa fa-user-doctor"></i>${b.doctor_name}</span>
+          </div>
+        </div>
+        <div class="status-badge ${statusClass}">${statusLabel}</div>
+      </div>
+      <div class="card-actions" id="actions-${b.id}">
+        ${b.status==='pending'?`
+          <button class="btn-sm btn-confirm" onclick="updateStatus('${b.id}','confirmed')"><i class="fa fa-check"></i>تأكيد</button>
+          <button class="btn-sm btn-cancel"  onclick="updateStatus('${b.id}','cancelled')"><i class="fa fa-xmark"></i>رفض</button>
+        `:''}
+        ${b.status==='confirmed'?`
+          <button class="btn-sm btn-cancel" onclick="updateStatus('${b.id}','cancelled')"><i class="fa fa-ban"></i>إلغاء</button>
+        `:''}
+        ${b.status==='cancelled'?`
+          <button class="btn-sm btn-confirm" onclick="updateStatus('${b.id}','confirmed')"><i class="fa fa-rotate-right"></i>إعادة تأكيد</button>
+        `:''}
+        <button class="btn-sm btn-wa" onclick="sendWa('${b.patient_phone}','${b.patient_name}','${dateStr}','${b.booking_time}','${b.status}')"><i class="fab fa-whatsapp"></i>واتساب</button>
+        <button class="btn-sm btn-edit" onclick="toggleEdit('${b.id}','${b.booking_date}','${b.booking_time}')"><i class="fa fa-pen"></i>تعديل الوقت</button>
+        <button class="btn-sm btn-del" onclick="deleteBooking('${b.id}')"><i class="fa fa-trash"></i></button>
+      </div>
+      <div class="edit-time-wrap" id="edit-${b.id}">
+        <input type="date" id="ed-date-${b.id}" value="${b.booking_date}">
+        <input type="time" id="ed-time-${b.id}" value="${b.booking_time}">
+        <button class="btn-sm btn-confirm" onclick="saveEdit('${b.id}')"><i class="fa fa-check"></i>حفظ</button>
+        <button class="btn-sm" style="border-color:var(--border2);color:var(--muted)" onclick="toggleEdit('${b.id}')">إلغاء</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleActions(id){
+  // nothing — always visible
+}
+
+function toggleEdit(id, date, time){
+  const el=document.getElementById('edit-'+id);
+  el.classList.toggle('open');
+}
+
+/* ── ACTIONS ── */
+async function updateStatus(id, status){
+  try{
+    await fetch(SURL+'/rest/v1/bookings?id=eq.'+id,{
+      method:'PATCH',
+      headers:{...HDRS,'Prefer':'return=minimal'},
+      body:JSON.stringify({status})
+    });
+    const b=ALL_BOOKINGS.find(x=>x.id===id);
+    if(b)b.status=status;
+    updateStats();renderBookings();
+    toast(status==='confirmed'?'✅ تم تأكيد الحجز':'❌ تم رفض الحجز');
+  }catch(e){toast('❌ فشل التحديث');}
+}
+
+async function saveEdit(id){
+  const date=document.getElementById('ed-date-'+id).value;
+  const time=document.getElementById('ed-time-'+id).value;
+  if(!date||!time){toast('أدخل التاريخ والوقت');return;}
+  try{
+    await fetch(SURL+'/rest/v1/bookings?id=eq.'+id,{
+      method:'PATCH',
+      headers:{...HDRS,'Prefer':'return=minimal'},
+      body:JSON.stringify({booking_date:date,booking_time:time})
+    });
+    const b=ALL_BOOKINGS.find(x=>x.id===id);
+    if(b){b.booking_date=date;b.booking_time=time;}
+    renderBookings();
+    toast('✅ تم تعديل الموعد');
+  }catch(e){toast('❌ فشل التعديل');}
+}
+
+async function deleteBooking(id){
+  if(!confirm('حذف هذا الحجز نهائياً؟'))return;
+  try{
+    await fetch(SURL+'/rest/v1/bookings?id=eq.'+id,{method:'DELETE',headers:HDRS});
+    ALL_BOOKINGS=ALL_BOOKINGS.filter(x=>x.id!==id);
+    updateStats();renderBookings();
+    toast('🗑️ تم حذف الحجز');
+  }catch(e){toast('❌ فشل الحذف');}
+}
+
+function sendWa(phone, name, date, time, status){
+  const clean=phone.replace(/[^\d]/g,'');
+  const statusMsg={pending:'في انتظار التأكيد',confirmed:'مؤكد ✅',cancelled:'ملغي ❌'}[status]||'';
+  const msg=encodeURIComponent('السلام عليكم '+name+'،\nبخصوص موعدك لدى د. محمدهمام السمان:\n📅 '+date+'\n🕐 '+time+'\n\nحالة الموعد: '+statusMsg+'\n\nشكراً لك.');
+  window.open('https://wa.me/'+clean+'?text='+msg,'_blank');
+}
+
+/* ── BLOCKED SLOTS ── */
+let BLOCKS=JSON.parse(localStorage.getItem('blockedSlots')||'[]');
+
+function togglePanel(){
+  const body=document.getElementById('panel-body');
+  const chev=document.getElementById('panel-chevron');
+  body.classList.toggle('open');
+  chev.style.transform=body.classList.contains('open')?'rotate(180deg)':'';
+}
+
+function renderBlocks(){
+  const list=document.getElementById('blocks-list');
+  if(!BLOCKS.length){list.innerHTML='<div style="color:var(--muted);font-size:13px;padding:10px 0">لا توجد أيام أو أوقات مغلقة</div>';return;}
+  const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  list.innerHTML=BLOCKS.map((b,i)=>{
+    const dt=new Date(b.date+'T12:00:00');
+    const dateStr=DAYS[dt.getDay()]+' '+dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear();
+    const label=b.time?dateStr+' — '+b.time+' (وقت محدد)':dateStr+' (يوم كامل)';
+    return`<div class="blocked-item">
+      <div class="bi-label">
+        <div><i class="fa fa-lock" style="color:var(--danger);margin-left:8px;font-size:11px"></i>${label}</div>
+        ${b.reason?'<div class="blocked-reason">'+b.reason+'</div>':''}
+      </div>
+      <button class="bi-remove" onclick="removeBlock(${i})"><i class="fa fa-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function addBlock(){
+  const date=document.getElementById('bl-date').value;
+  const time=document.getElementById('bl-time').value;
+  const reason=document.getElementById('bl-reason').value.trim();
+  if(!date){toast('اختر تاريخاً أولاً');return;}
+  BLOCKS.push({date,time,reason});
+  localStorage.setItem('blockedSlots',JSON.stringify(BLOCKS));
+  document.getElementById('bl-date').value='';
+  document.getElementById('bl-time').value='';
+  document.getElementById('bl-reason').value='';
+  renderBlocks();
+  toast('✅ تم إغلاق '+(time?'الوقت المحدد':'اليوم كامل'));
+}
+
+function removeBlock(i){
+  BLOCKS.splice(i,1);
+  localStorage.setItem('blockedSlots',JSON.stringify(BLOCKS));
+  renderBlocks();
+  toast('🔓 تم فتح الموعد');
+}
+
+/* ── NAME EDIT ── */
+function showNameEdit(id, currentName){
+  document.getElementById('name-display-'+id).parentElement.style.display='none';
+  const editWrap=document.getElementById('name-edit-'+id);
+  editWrap.style.display='flex';
+  const inp=document.getElementById('name-inp-'+id);
+  inp.value=currentName==='زائر'?'':currentName;
+  inp.focus();
+  inp.addEventListener('keydown',function handler(e){
+    if(e.key==='Enter')saveName(id);
+    if(e.key==='Escape')hideNameEdit(id);
+    inp.removeEventListener('keydown',handler);
+  });
+}
+
+function hideNameEdit(id){
+  document.getElementById('name-display-'+id).parentElement.style.display='flex';
+  document.getElementById('name-edit-'+id).style.display='none';
+}
+
+async function saveName(id){
+  const name=document.getElementById('name-inp-'+id).value.trim()||'زائر';
+  try{
+    await fetch(SURL+'/rest/v1/bookings?id=eq.'+id,{
+      method:'PATCH',
+      headers:{...HDRS,'Prefer':'return=minimal'},
+      body:JSON.stringify({patient_name:name})
+    });
+    const b=ALL_BOOKINGS.find(x=>x.id===id);
+    if(b)b.patient_name=name;
+    hideNameEdit(id);
+    renderBookings();
+    toast('✅ تم تحديث اسم المريض');
+  }catch(e){toast('❌ فشل التحديث');}
+}
+
+/* ── TOAST ── */
+function toast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+/* ── AUTO INIT ── */
+if(localStorage.getItem('bookAuth')==='1'){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  loadBookings();
+  renderBlocks();
+  setInterval(loadBookings,60000);
+}
+</script>
+</body>
+</html>

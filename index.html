@@ -645,7 +645,7 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
       <!-- Step 3: Confirm -->
       <div class="step-content" id="step-3">
         <label class="form-label">ملخص الحجز</label>
-        <div style="border:1px solid var(--border2);padding:20px;margin-bottom:4px" id="booking-summary"></div>
+        <div style="border:1px solid var(--border2);padding:20px;margin-bottom:16px" id="booking-summary"></div>
         <button class="btn-next" style="background:#25D366" onclick="confirmBooking()">
           <i class="fab fa-whatsapp"></i> تأكيد عبر واتساب
         </button>
@@ -927,6 +927,10 @@ function goStep(n){
   if(n===3)renderSum();
 }
 
+function getBlockedSlots(){
+  try{return JSON.parse(localStorage.getItem('blockedSlots')||'[]');}catch(e){return[];}
+}
+
 function renderCal(){
   const y=BK.month.getFullYear(),m=BK.month.getMonth();
   const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
@@ -939,8 +943,11 @@ function renderCal(){
     const dt=new Date(y,m,day),dow=dt.getDay();
     const str=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
     const past=dt<today,cl=closed.includes(dow),sel=BK.date===str,tod=dt.getTime()===today.getTime();
+    // تحقق من الأيام المغلقة من لوحة المنسقة
+    const blocks=getBlockedSlots();
+    const isBlocked=blocks.some(b=>b.date===str&&!b.time); // يوم كامل مغلق
     let c='cal-day';
-    if(past||cl)c+=' disabled';else if(sel)c+=' selected';else if(tod)c+=' today';
+    if(past||cl||isBlocked)c+=' disabled';else if(sel)c+=' selected';else if(tod)c+=' today';
     h+=`<div class="${c}" ${(!past&&!cl)?`onclick="selDate('${str}')"`:''}>${day}</div>`;
   }
   document.getElementById('cal-grid').innerHTML=h;
@@ -948,7 +955,7 @@ function renderCal(){
 }
 function changeMonth(d){BK.month.setMonth(BK.month.getMonth()+d);renderCal();}
 function selDate(s){BK.date=s;BK.time=null;renderCal();document.getElementById('sn2').disabled=true;}
-function renderSlots(){
+async function renderSlots(){
   const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
   if(!doc||!BK.date){document.getElementById('time-slots').innerHTML='<p style="color:var(--text-muted);font-size:13px;grid-column:1/-1;text-align:center;padding:16px">اختر تاريخاً أولاً</p>';return;}
   const[sh,sm]=(doc.startTime||'9:00').split(':').map(Number);
@@ -959,7 +966,22 @@ function renderSlots(){
     sl.push(`${h12}:${String(m).padStart(2,'0')} ${ampm}`);
     cur+=dur;
   }
-  document.getElementById('time-slots').innerHTML=sl.map(t=>`<div class="time-slot${BK.time===t?' selected':''}" onclick="selTime('${t}')">${t}</div>`).join('');
+  let bookedTimes=[];
+  try{
+    const SURL=DB.getConfig().url;
+    const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3hmcXpiZmVobWt2YmVwb2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA5NDMsImV4cCI6MjA4OTA4Njk0M30.VNgynNVki7yWXKvpoWQfgRDQ5fGEfjS1KXTs2JKfHM4';
+    const r=await fetch(SURL+'/rest/v1/bookings?booking_date=eq.'+BK.date+'&doctor_name=eq.'+encodeURIComponent(doc.name)+'&status=neq.cancelled&select=booking_time',
+      {headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}});
+    if(r.ok){const rows=await r.json();bookedTimes=rows.map(x=>x.booking_time);}
+  }catch(e){}
+  const blocks=getBlockedSlots();
+  document.getElementById('time-slots').innerHTML=sl.map(t=>{
+    const isBooked=bookedTimes.includes(t);
+    const isBlockedTime=blocks.some(b=>b.date===BK.date&&b.time===t);
+    const isSel=BK.time===t;
+    if(isBooked||isBlockedTime)return`<div class="time-slot" style="opacity:.3;cursor:not-allowed;text-decoration:line-through" title="${isBlockedTime?'مغلق':'محجوز'}">${t}</div>`;
+    return`<div class="time-slot${isSel?' selected':''}" onclick="selTime('${t}')">${t}</div>`;
+  }).join('');
 }
 function selTime(t){BK.time=t;renderSlots();document.getElementById('sn2').disabled=false;}
 function renderSum(){
@@ -970,13 +992,31 @@ function renderSum(){
     <div class="sum-row"><span class="sum-label">التاريخ</span><span class="sum-val">${DAYS[dt.getDay()]} ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}</span></div>
     <div class="sum-row"><span class="sum-label">الوقت</span><span class="sum-val">${BK.time}</span></div>`;
 }
-function confirmBooking(){
+async function confirmBooking(){
   const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
   const dt=new Date(BK.date+'T12:00:00');
-  const date=`${DAYS[dt.getDay()]} ${dt.getDate()} ${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
-  const msg=encodeURIComponent(`السلام عليكم،\nأرغب في حجز موعد:\n👨‍⚕️ الطبيب: ${doc?.name}\n📅 التاريخ: ${date}\n🕐 الوقت: ${BK.time}\n\nأرجو التأكيد، شكراً.`);
-  const wa=((D.clinicInfo||{}).whatsapp||'966500000000').replace(/\D/g,'');
-  window.open(`https://wa.me/${wa}?text=${msg}`,'_blank');
+  const date=DAYS[dt.getDay()]+' '+dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear();
+  const SURL=DB.getConfig().url;
+  const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3hmcXpiZmVobWt2YmVwb2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTA5NDMsImV4cCI6MjA4OTA4Njk0M30.VNgynNVki7yWXKvpoWQfgRDQ5fGEfjS1KXTs2JKfHM4';
+  // حفظ في Supabase بصمت — بدون إزعاج الزائر
+  try{
+    await fetch(SURL+'/rest/v1/bookings',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SKEY,'Authorization':'Bearer '+SKEY,'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        patient_name:'زائر',
+        patient_phone:'—',
+        doctor_name:doc?.name||'',
+        booking_date:BK.date,
+        booking_time:BK.time,
+        status:'pending'
+      })
+    });
+  }catch(e){console.warn('Booking save error:',e);}
+  // فتح واتساب كالمعتاد
+  const wa=((D.clinicInfo||{}).whatsapp||'966500000000').replace(/[^\d]/g,'');
+  const msg=encodeURIComponent('السلام عليكم،\nأرغب في حجز موعد:\n👨‍⚕️ الطبيب: '+doc?.name+'\n📅 التاريخ: '+date+'\n🕐 الوقت: '+BK.time+'\n\nأرجو التأكيد، شكراً.');
+  window.open('https://wa.me/'+wa+'?text='+msg,'_blank');
   closeBooking();
 }
 
