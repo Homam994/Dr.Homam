@@ -619,17 +619,10 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
     <div class="modal-body">
       <div class="steps">
         <div class="step-dot active" id="sd1">1</div><div class="step-line"></div>
-        <div class="step-dot" id="sd2">2</div><div class="step-line"></div>
-        <div class="step-dot" id="sd3">3</div>
+        <div class="step-dot" id="sd2">2</div>
       </div>
-      <!-- Step 1: Doctor -->
+      <!-- Step 1: Date & Time -->
       <div class="step-content active" id="step-1">
-        <label class="form-label">اختر الطبيب</label>
-        <div class="doc-options" id="modal-docs"></div>
-        <button class="btn-next" id="sn1" onclick="goStep(2)" disabled>التالي</button>
-      </div>
-      <!-- Step 2: Date & Time -->
-      <div class="step-content" id="step-2">
         <label class="form-label">اختر التاريخ</label>
         <div class="cal-header">
           <button class="cal-nav" onclick="changeMonth(-1)"><i class="fa fa-chevron-right"></i></button>
@@ -639,17 +632,16 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
         <div class="cal-grid" id="cal-grid"></div>
         <label class="form-label" style="margin-top:20px">اختر الوقت</label>
         <div class="time-slots" id="time-slots"></div>
-        <button class="btn-next" id="sn2" onclick="goStep(3)" disabled>التالي</button>
-        <button class="btn-back" onclick="goStep(1)">رجوع</button>
+        <button class="btn-next" id="sn1" onclick="goStep(2)" disabled>التالي</button>
       </div>
-      <!-- Step 3: Confirm -->
-      <div class="step-content" id="step-3">
+      <!-- Step 2: Confirm -->
+      <div class="step-content" id="step-2">
         <label class="form-label">ملخص الحجز</label>
         <div style="border:1px solid var(--border2);padding:20px;margin-bottom:4px" id="booking-summary"></div>
         <button class="btn-next" style="background:#25D366" onclick="confirmBooking()">
           <i class="fab fa-whatsapp"></i> تأكيد عبر واتساب
         </button>
-        <button class="btn-back" onclick="goStep(2)">تغيير الموعد</button>
+        <button class="btn-back" onclick="goStep(1)">تغيير الموعد</button>
       </div>
     </div>
   </div>
@@ -900,8 +892,11 @@ function initReveal(){
 function openBooking(){
   BK={doctorId:null,date:null,time:null,month:new Date()};
   BK.month.setDate(1);
+  // اختيار الطبيب الأول تلقائياً
+  const firstDoc=(D.doctors||[])[0];
+  if(firstDoc)BK.doctorId=firstDoc.id;
   document.getElementById('booking-modal').classList.add('active');
-  goStep(1); renderModalDocs();
+  goStep(1);
 }
 function closeBooking(){document.getElementById('booking-modal').classList.remove('active')}
 document.getElementById('booking-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeBooking()});
@@ -918,13 +913,13 @@ function renderModalDocs(){
 function selDoc(id){BK.doctorId=id;document.querySelectorAll('.doc-opt').forEach(e=>e.classList.remove('selected'));const o=document.getElementById('do-'+id);if(o)o.classList.add('selected');document.getElementById('sn1').disabled=false;}
 
 function goStep(n){
-  for(let i=1;i<=3;i++){
+  for(let i=1;i<=2;i++){
     document.getElementById('step-'+i).classList.toggle('active',i===n);
     const d=document.getElementById('sd'+i);
     d.classList.toggle('active',i===n);d.classList.toggle('done',i<n);
   }
-  if(n===2)renderCal();
-  if(n===3)renderSum();
+  if(n===1)renderCal();
+  if(n===2)renderSum();
 }
 
 function renderCal(){
@@ -947,7 +942,7 @@ function renderCal(){
   renderSlots();
 }
 function changeMonth(d){BK.month.setMonth(BK.month.getMonth()+d);renderCal();}
-function selDate(s){BK.date=s;BK.time=null;renderCal();document.getElementById('sn2').disabled=true;}
+function selDate(s){BK.date=s;BK.time=null;renderCal();document.getElementById('sn1').disabled=true;}
 function renderSlots(){
   const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
   if(!doc||!BK.date){document.getElementById('time-slots').innerHTML='<p style="color:var(--text-muted);font-size:13px;grid-column:1/-1;text-align:center;padding:16px">اختر تاريخاً أولاً</p>';return;}
@@ -961,7 +956,7 @@ function renderSlots(){
   }
   document.getElementById('time-slots').innerHTML=sl.map(t=>`<div class="time-slot${BK.time===t?' selected':''}" onclick="selTime('${t}')">${t}</div>`).join('');
 }
-function selTime(t){BK.time=t;renderSlots();document.getElementById('sn2').disabled=false;}
+function selTime(t){BK.time=t;renderSlots();document.getElementById('sn1').disabled=false;}
 function renderSum(){
   const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
   const dt=new Date(BK.date+'T12:00:00');
