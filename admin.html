@@ -415,12 +415,11 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
       <div class="form-grid">
         <div class="form-group"><label class="form-label">اسمك</label><input type="text" class="form-input" id="doc-name"></div>
         <div class="form-group"><label class="form-label">التخصص</label><input type="text" class="form-input" id="doc-spec" value="تقويم الأسنان"></div>
-        <div class="form-group"><label class="form-label">وقت البداية</label><input type="time" class="form-input" id="doc-start" value="09:00"></div>
-        <div class="form-group"><label class="form-label">وقت الانتهاء</label><input type="time" class="form-input" id="doc-end" value="17:00"></div>
         <div class="form-group"><label class="form-label">مدة الموعد</label><select class="form-select" id="doc-dur"><option value="15">15 دقيقة</option><option value="30" selected>30 دقيقة</option><option value="45">45 دقيقة</option><option value="60">ساعة</option></select></div>
         <div class="form-group full"><label class="form-label">أيام العمل</label><div class="days-wrap" id="doc-days"></div></div>
       </div>
-      <button class="btn btn-gold" style="margin-top:20px" onclick="saveDoc()"><i class="fa fa-cloud-arrow-up"></i>حفظ بياناتي</button>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px"><i class="fa fa-info-circle" style="color:var(--gold);margin-left:6px"></i>وقت البداية والانتهاء يُضبط تلقائياً من جدول مواعيد العمل أعلاه</p>
+      <button class="btn btn-gold" style="margin-top:12px" onclick="saveDoc()"><i class="fa fa-cloud-arrow-up"></i>حفظ بياناتي</button>
     </div>
   </div>
 
@@ -598,13 +597,24 @@ let DATA=null;
 
 /* ── AUTH ── */
 function doLogin(){
-  if(document.getElementById('lp').value===(localStorage.getItem('adminPass')||PASS)){
+  const savedPass=DATA?.settings?.adminPass||localStorage.getItem('adminPass')||PASS;
+  if(document.getElementById('lp').value===savedPass){
     document.getElementById('login-screen').style.display='none';
     localStorage.setItem('adminAuth','1');init();
   }else{document.getElementById('login-err').style.display='block';}
 }
 function doLogout(){localStorage.removeItem('adminAuth');location.reload();}
-function changePass(){const v=document.getElementById('new-pass').value.trim();if(!v)return;localStorage.setItem('adminPass',v);toast('✅ تم تغيير كلمة المرور');}
+function changePass(){
+  const v=document.getElementById('new-pass').value.trim();
+  if(!v){toast('أدخل كلمة مرور جديدة');return;}
+  if(v.length<6){toast('كلمة المرور يجب أن تكون 6 أحرف على الأقل');return;}
+  if(!DATA.settings)DATA.settings={};
+  DATA.settings.adminPass=v;
+  save(DATA).then(()=>{
+    document.getElementById('new-pass').value='';
+    toast('✅ تم تغيير كلمة المرور وحفظها في Supabase');
+  });
+}
 
 /* ── NAV ── */
 const PAGE_META={
@@ -920,8 +930,9 @@ async function delRev(i){if(!confirm('حذف؟'))return;DATA.reviews.splice(i,1)
 function loadHours(){
   const ov=DATA?.hoursOverride||null;
   const doc=(DATA?.doctors||[])[0]||{};
-  setV('doc-name',doc.name||DATA?.clinicInfo?.name||'');setV('doc-spec',doc.specialty||'');
-  setV('doc-start',doc.startTime||'09:00');setV('doc-end',doc.endTime||'17:00');setV('doc-dur',doc.slotDuration||30);
+  setV('doc-name',doc.name||DATA?.clinicInfo?.name||'');
+  setV('doc-spec',doc.specialty||'');
+  setV('doc-dur',doc.slotDuration||30);
   const daysWrap=document.getElementById('doc-days');
   daysWrap.innerHTML=DAYS.map((name,i)=>`<input type="checkbox" class="day-cb" id="dc-${i}" ${(doc.workDays||[0,1,2,3,4]).includes(i)?'checked':''}><label class="day-lbl" for="dc-${i}">${name}</label>`).join('');
   renderHoursTable(ov);
@@ -979,11 +990,24 @@ async function saveHours(){
     if(has2)obj.shift2=document.getElementById('hf2-'+i).value+' - '+document.getElementById('ht2-'+i).value;
     return obj;
   });
+  // استخراج أوقات العمل من الجدول وتحديث بيانات الطبيب تلقائياً
+  const workDays=[];
+  const openRows=DATA.hoursOverride.filter((r,i)=>{if(!r.closed)workDays.push(i);return !r.closed;});
+  // أول يوم مفتوح يحدد وقت البداية والانتهاء الافتراضي
+  let startTime='09:00', endTime='17:00';
+  if(openRows.length){
+    const parts=openRows[0].time.split(' - ');
+    if(parts[0])startTime=parts[0];
+    if(parts[1])endTime=parts[1];
+  }
+  if(!DATA.doctors)DATA.doctors=[{}];
+  DATA.doctors[0]={...DATA.doctors[0],workDays,startTime,endTime};
   await save(DATA);
 }
 async function saveDoc(){
   const days=[];for(let i=0;i<7;i++){if(document.getElementById('dc-'+i)?.checked)days.push(i);}
-  const doc={id:1,name:document.getElementById('doc-name').value,specialty:document.getElementById('doc-spec').value,img:(DATA?.doctors||[])[0]?.img||'',workDays:days,startTime:document.getElementById('doc-start').value,endTime:document.getElementById('doc-end').value,slotDuration:parseInt(document.getElementById('doc-dur').value)};
+  const existing=DATA.doctors?.[0]||{};
+  const doc={id:1,name:document.getElementById('doc-name').value,specialty:document.getElementById('doc-spec').value,img:existing.img||'',workDays:days,startTime:existing.startTime||'09:00',endTime:existing.endTime||'17:00',slotDuration:parseInt(document.getElementById('doc-dur').value)};
   DATA.doctors=[doc];await save(DATA);
 }
 

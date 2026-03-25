@@ -127,6 +127,7 @@ body{font-family:var(--font-body);background:var(--black);color:var(--white);ove
 /* ── NAV ── */
 nav{position:fixed;top:0;width:100%;z-index:1000;padding:0 5%;transition:all .4s}
 nav.scrolled{background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+@media(max-width:960px){nav{background:rgba(10,10,10,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;height:80px}
 .nav-logo{text-decoration:none;display:flex;flex-direction:column;gap:2px}
 .nav-logo-name{font-family:var(--font-display);font-size:20px;font-weight:400;color:var(--white);letter-spacing:2px}
@@ -657,6 +658,28 @@ let D=null, BK={doctorId:null,date:null,time:null,month:null};
 
 /* helpers */
 function set(id,v){const e=document.getElementById(id);if(e&&v!==undefined)e.textContent=v}
+
+// Cloudinary auto-optimization: f_auto,q_auto
+// آمن تماماً — يعمل فقط على روابط Cloudinary ولا يؤثر على أي مصدر آخر
+function cdnOpt(url){
+  if(!url||typeof url!=='string')return url;
+  if(!url.includes('res.cloudinary.com'))return url;
+  // تجنب التكرار إذا كان الرابط محدَّثاً مسبقاً
+  if(url.includes('f_auto'))return url;
+  // أدخل f_auto,q_auto بعد /upload/
+  return url.replace('/upload/','/upload/f_auto,q_auto/');
+}
+
+// تطبيق التحسين على أي عنصر وسائط
+function setMediaOptimized(el, url){
+  if(!el||!url)return;
+  const optimized=cdnOpt(url);
+  if(el.tagName==='IMG'||el.tagName==='VIDEO'||el.tagName==='SOURCE'){
+    el.src=optimized;
+  }else if(el.tagName==='IFRAME'){
+    el.src=url; // iframes لا تحتاج تحسين Cloudinary
+  }
+}
 function isVideo(u){return u&&(/youtube\.com|youtu\.be|vimeo\.com/i.test(u)||/\.(mp4|webm|ogg|mov)([?#]|$)/i.test(u))}
 function buildMedia(url,style){
   if(!url)return null;
@@ -665,8 +688,8 @@ function buildMedia(url,style){
   if(yt)return`<iframe src="https://www.youtube.com/embed/${yt[1]}?autoplay=1&mute=1&loop=1&playlist=${yt[1]}&controls=0&rel=0" style="${style};border:none" allow="autoplay" allowfullscreen></iframe>`;
   const vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if(vm)return`<iframe src="https://player.vimeo.com/video/${vm[1]}?autoplay=1&muted=1&loop=1&background=1" style="${style};border:none" allowfullscreen></iframe>`;
-  if(isVideo(url))return`<video src="${url}" style="${style}" autoplay muted loop playsinline></video>`;
-  return`<img src="${url}" alt="" style="${style}">`;
+  if(isVideo(url))return`<video src="${cdnOpt(url)}" style="${style}" autoplay muted loop playsinline></video>`;
+  return`<img src="${cdnOpt(url)}" alt="" style="${style}">`;
 }
 
 function toggleMenu(){
@@ -732,7 +755,7 @@ function applyAll(){
   set('about-p1',i.about1); set('about-p2',i.about2);
   set('cred1',a.cred1); set('cred2',a.cred2); set('cred3',a.cred3); set('cred4',a.cred4);
   const aWrap=document.getElementById('about-media-wrap');
-  if(a.img&&aWrap){const html=buildMedia(a.img,'width:100%;height:100%;object-fit:cover;object-position:center top');if(html)aWrap.innerHTML=html;}
+  if(a.img&&aWrap){const html=buildMedia(a.img,'width:100%;height:100%;object-fit:cover;object-position:center top');if(html){aWrap.innerHTML=html;const imgs=aWrap.querySelectorAll("img,video");imgs.forEach(el=>el.setAttribute("loading","lazy"));}}
 
   /* services */
   renderServices();
@@ -777,13 +800,13 @@ function applyAll(){
     const img=document.getElementById('nav-logo-img');
     const textWrap=document.getElementById('nav-text-wrap');
     if(wrap&&img){
-      img.src=i.logoUrl;
+      img.src=cdnOpt(i.logoUrl);
       wrap.style.display='flex';
       if(textWrap)textWrap.style.display='none';
     }
     // تطبيق الشعار كـ favicon
     const favicon=document.getElementById('favicon');
-    if(favicon)favicon.href=i.logoUrl;
+    if(favicon)favicon.href=cdnOpt(i.logoUrl);
   }
 }
 
@@ -811,10 +834,10 @@ function renderGallery(){
     <div class="compare-card reveal">
       <div class="compare-wrap" id="cw-${idx}">
         <div class="compare-before">
-          ${g.before?`<img src="${g.before}" alt="قبل" loading="lazy">`:`<div style="width:100%;height:100%;background:var(--black4);display:flex;align-items:center;justify-content:center;color:var(--border2);font-size:40px"><i class='fa fa-image'></i></div>`}
+          ${g.before?`<img src="${cdnOpt(g.before)}" alt="قبل" loading="lazy">`:`<div style="width:100%;height:100%;background:var(--black4);display:flex;align-items:center;justify-content:center;color:var(--border2);font-size:40px"><i class='fa fa-image'></i></div>`}
         </div>
         <div class="compare-after" id="ca-${idx}">
-          ${g.after?`<img src="${g.after}" alt="بعد" loading="lazy">`:`<div style="width:100%;height:100%;background:var(--black3);display:flex;align-items:center;justify-content:center;color:var(--border2);font-size:40px"><i class='fa fa-image'></i></div>`}
+          ${g.after?`<img src="${cdnOpt(g.after)}" alt="بعد" loading="lazy">`:`<div style="width:100%;height:100%;background:var(--black3);display:flex;align-items:center;justify-content:center;color:var(--border2);font-size:40px"><i class='fa fa-image'></i></div>`}
         </div>
         <div class="compare-divider" id="cd-${idx}"></div>
         <div class="compare-handle" id="ch-${idx}"><i class="fa fa-arrows-left-right"></i></div>
