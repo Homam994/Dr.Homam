@@ -18,7 +18,7 @@ const DB = (() => {
     "contactDesc": "يسعدني الإجابة على استفساراتك وحجز موعدك في أقرب وقت.",
     "about1": "أقدّم لك رعاية تقويمية متخصصة تجمع بين الدقة العلمية والحس الجمالي.",
     "about2": "حاصل على الماجستير السريري في تقويم الأسنان مع خبرة تمتد لأكثر من 6 سنوات.",
-    "footerDesc": "ابتسامتك هي انعكاس لثقتك — أنا هنا لأجعلها تتألق.",
+    "footerDesc": "ابتسامتك هي انعكاس لثقتك , أنا هنا لأجعلها تتألق.",
     "logoUrl": "https://res.cloudinary.com/dwzew575i/image/upload/v1773612769/oie_iBTOJqT6Lic2_wqfx5q.png",
     "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3573.87684397454!2d43.92051649999999!3d26.3951662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x157f57a2469f82ef%3A0x2803b38178f00625!2zSGFybW9ueSBzbWlsZSBjbGluaWNzINi52YrYp9iv2KfYqiDZh9in2LHZhdmI2YbZiiDYs9mF2KfZitmEINmD2YTZitmG2YrZgw!5e0!3m2!1sar!2ssa!4v1773538782924!5m2!1sar!2ssa"
   },
@@ -60,9 +60,9 @@ const DB = (() => {
   "doctors": [
     {
       "id": 1,
-      "img": "",
       "name": "د. محمدهمام السمان",
-      "endTime": "21:00",
+      "specialty": "تقويم الأسنان والفكين",
+      "img": "",
       "workDays": [
         0,
         1,
@@ -71,8 +71,8 @@ const DB = (() => {
         4,
         6
       ],
-      "specialty": "تقويم الأسنان والفكين",
-      "startTime": "14:00",
+      "startTime": "13:30",
+      "endTime": "21:30",
       "slotDuration": 30
     }
   ],
@@ -149,43 +149,43 @@ const DB = (() => {
     }
   ],
   "settings": {
-    "adminPass": "admin123"
+    "adminPass": "Homam94++"
   },
   "hoursOverride": [
     {
       "day": "الأحد",
-      "time": "14:00 - 21:00",
-      "closed": false
+      "closed": false,
+      "time": "13:30 - 21:30"
     },
     {
       "day": "الاثنين",
-      "time": "14:00 - 21:00",
-      "closed": false
+      "closed": false,
+      "time": "13:30 - 21:30"
     },
     {
       "day": "الثلاثاء",
-      "time": "14:00 - 21:00",
-      "closed": false
+      "closed": false,
+      "time": "13:30 - 21:30"
     },
     {
       "day": "الأربعاء",
-      "time": "14:00 - 21:00",
-      "closed": false
+      "closed": false,
+      "time": "13:30 - 21:30"
     },
     {
       "day": "الخميس",
-      "time": "14:00 - 21:00",
-      "closed": false
+      "closed": false,
+      "time": "12:00 - 20:00"
     },
     {
       "day": "الجمعة",
-      "time": "09:00 - 13:00",
-      "closed": true
+      "closed": true,
+      "time": "09:00 - 13:00"
     },
     {
       "day": "السبت",
-      "time": "14:00 - 21:00",
-      "closed": false
+      "closed": false,
+      "time": "13:30 - 21:30"
     }
   ],
   "fonts": {
