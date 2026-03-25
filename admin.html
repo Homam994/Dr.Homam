@@ -597,7 +597,8 @@ let DATA=null;
 
 /* ── AUTH ── */
 function doLogin(){
-  const savedPass=DATA?.settings?.adminPass||localStorage.getItem('adminPass')||PASS;
+  // الأولوية: Supabase → localStorage → DB.DEFAULTS → الثابتة
+  const savedPass=DATA?.settings?.adminPass||localStorage.getItem('adminPass')||DB.DEFAULTS?.settings?.adminPass||PASS;
   if(document.getElementById('lp').value===savedPass){
     document.getElementById('login-screen').style.display='none';
     localStorage.setItem('adminAuth','1');init();
@@ -610,9 +611,11 @@ function changePass(){
   if(v.length<6){toast('كلمة المرور يجب أن تكون 6 أحرف على الأقل');return;}
   if(!DATA.settings)DATA.settings={};
   DATA.settings.adminPass=v;
+  // احفظ في localStorage أيضاً كاحتياط للدخول السريع
+  localStorage.setItem('adminPass',v);
   save(DATA).then(()=>{
     document.getElementById('new-pass').value='';
-    toast('✅ تم تغيير كلمة المرور وحفظها في Supabase');
+    toast('✅ تم تغيير كلمة المرور — احفظ db.js عبر زر التصدير لتثبيتها');
   });
 }
 

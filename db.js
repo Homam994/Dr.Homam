@@ -148,6 +148,9 @@ const DB = (() => {
       "initial": "G"
     }
   ],
+  "settings": {
+    "adminPass": "admin123"
+  },
   "hoursOverride": [
     {
       "day": "الأحد",

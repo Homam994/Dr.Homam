@@ -969,8 +969,20 @@ function selDate(s){BK.date=s;BK.time=null;renderCal();document.getElementById('
 function renderSlots(){
   const doc=(D.doctors||[]).find(x=>x.id===BK.doctorId);
   if(!doc||!BK.date){document.getElementById('time-slots').innerHTML='<p style="color:var(--text-muted);font-size:13px;grid-column:1/-1;text-align:center;padding:16px">اختر تاريخاً أولاً</p>';return;}
-  const[sh,sm]=(doc.startTime||'9:00').split(':').map(Number);
-  const[eh,em]=(doc.endTime||'17:00').split(':').map(Number);
+
+  // وقت كل يوم من hoursOverride — كل يوم له ساعاته الخاصة
+  const dow=new Date(BK.date+'T12:00:00').getDay();
+  const ov=D.hoursOverride;
+  let startTime=doc.startTime||'9:00';
+  let endTime=doc.endTime||'17:00';
+  if(ov&&ov[dow]&&!ov[dow].closed){
+    const parts=ov[dow].time.split(' - ');
+    if(parts[0])startTime=parts[0].trim();
+    if(parts[1])endTime=parts[1].trim();
+  }
+
+  const[sh,sm]=startTime.split(':').map(Number);
+  const[eh,em]=endTime.split(':').map(Number);
   const dur=doc.slotDuration||30;let cur=sh*60+sm,end=eh*60+em;const sl=[];
   while(cur+dur<=end){
     const h=Math.floor(cur/60),m=cur%60,ampm=h>=12?'م':'ص',h12=h%12||12;
