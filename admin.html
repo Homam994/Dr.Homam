@@ -511,7 +511,14 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
       <input type="hidden" id="s-idx">
       <div style="margin-bottom:16px"><label class="form-label">أيقونة Font Awesome</label><input type="text" class="form-input" id="s-icon" placeholder="fa fa-tooth" dir="ltr"><p style="font-size:11px;color:var(--muted);margin-top:6px">مثال: fa fa-tooth · fa fa-teeth · fa fa-star</p></div>
       <div style="margin-bottom:16px"><label class="form-label">اسم الخدمة</label><input type="text" class="form-input" id="s-name"></div>
-      <div style="margin-bottom:20px"><label class="form-label">الوصف</label><textarea class="form-textarea" id="s-desc" rows="3"></textarea></div>
+      <div style="margin-bottom:16px"><label class="form-label">الوصف</label><textarea class="form-textarea" id="s-desc" rows="3"></textarea></div>
+      <div style="margin-bottom:20px">
+        <label class="form-label">صورة خلفية (اختياري — تظهر على الموبايل)</label>
+        <input type="url" class="form-input" id="s-img" placeholder="https://res.cloudinary.com/..." dir="ltr" oninput="previewSrvImg()">
+        <div id="s-img-prev" style="display:none;margin-top:8px;height:80px;overflow:hidden;border-radius:2px;position:relative">
+          <img id="s-img-thumb" src="" style="width:100%;height:100%;object-fit:cover">
+        </div>
+      </div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-gold" onclick="saveSrv()" style="flex:1;justify-content:center"><i class="fa fa-cloud-arrow-up"></i>حفظ</button>
         <button class="btn btn-outline" onclick="closeSrvModal()">إلغاء</button>
@@ -800,12 +807,37 @@ function renderSrvList(){
 }
 function openSrvModal(idx){
   document.getElementById('srv-modal').classList.add('open');
-  if(idx!==undefined){const s=DATA.services[idx];document.getElementById('srv-modal-t').textContent='تعديل الخدمة';document.getElementById('s-idx').value=idx;document.getElementById('s-icon').value=s.icon||'';document.getElementById('s-name').value=s.name;document.getElementById('s-desc').value=s.desc;}
-  else{document.getElementById('srv-modal-t').textContent='إضافة خدمة';['s-idx','s-icon','s-name','s-desc'].forEach(id=>document.getElementById(id).value='');}
+  document.getElementById('s-img-prev').style.display='none';
+  if(idx!==undefined){
+    const s=DATA.services[idx];
+    document.getElementById('srv-modal-t').textContent='تعديل الخدمة';
+    document.getElementById('s-idx').value=idx;
+    document.getElementById('s-icon').value=s.icon||'';
+    document.getElementById('s-name').value=s.name;
+    document.getElementById('s-desc').value=s.desc;
+    document.getElementById('s-img').value=s.img||'';
+    if(s.img){document.getElementById('s-img-thumb').src=s.img;document.getElementById('s-img-prev').style.display='block';}
+  }else{
+    document.getElementById('srv-modal-t').textContent='إضافة خدمة';
+    ['s-idx','s-icon','s-name','s-desc','s-img'].forEach(id=>document.getElementById(id).value='');
+  }
 }
 function closeSrvModal(){document.getElementById('srv-modal').classList.remove('open');}
+function previewSrvImg(){
+  const url=document.getElementById('s-img').value.trim();
+  const prev=document.getElementById('s-img-prev');
+  const thumb=document.getElementById('s-img-thumb');
+  if(url){thumb.src=url;prev.style.display='block';}
+  else{prev.style.display='none';}
+}
 async function saveSrv(){
-  const idx=document.getElementById('s-idx').value;const s={icon:document.getElementById('s-icon').value,name:document.getElementById('s-name').value,desc:document.getElementById('s-desc').value};
+  const idx=document.getElementById('s-idx').value;
+  const s={
+    icon:document.getElementById('s-icon').value,
+    name:document.getElementById('s-name').value,
+    desc:document.getElementById('s-desc').value,
+    img:document.getElementById('s-img').value.trim()
+  };
   const svs=[...(DATA.services||[])];if(idx!=='')svs[parseInt(idx)]=s;else svs.push(s);
   DATA.services=svs;await save(DATA);closeSrvModal();renderSrvList();
 }
