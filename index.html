@@ -908,7 +908,7 @@ function initSwiper(prefix, wrapId){
       const max=getMaxIdx();
       idx=Math.max(0,Math.min(n,max));
       const sw=slideWidth()+gap;
-      track.style.transform=`translateX(${idx*sw}px)`;
+      track.style.transform=`translateX(${-idx*sw}px)`;
       renderDots();
     }
 
@@ -916,19 +916,19 @@ function initSwiper(prefix, wrapId){
     track._swiperGo=go;
     window['_swiper_'+prefix]=go;
 
-    // Touch/drag
+    // Touch/drag — RTL: سحب يسار = التالي، سحب يمين = السابق
     let startX=0,dragging=false;
     wrap.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;dragging=true;},{passive:true});
     wrap.addEventListener('touchend',e=>{
       if(!dragging)return;dragging=false;
       const dx=startX-e.changedTouches[0].clientX;
-      if(Math.abs(dx)>40)go(dx>0?idx+1:idx-1);
+      if(Math.abs(dx)>40)go(dx>0?idx-1:idx+1);
     },{passive:true});
     wrap.addEventListener('mousedown',e=>{startX=e.clientX;dragging=true;e.preventDefault();});
     window.addEventListener('mouseup',e=>{
       if(!dragging)return;dragging=false;
       const dx=startX-e.clientX;
-      if(Math.abs(dx)>40)go(dx>0?idx+1:idx-1);
+      if(Math.abs(dx)>40)go(dx>0?idx-1:idx+1);
     });
 
     renderDots();
