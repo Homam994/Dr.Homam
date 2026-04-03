@@ -197,7 +197,7 @@ section{padding:110px 5%}
 /* ── ABOUT ── */
 #about{background:var(--black2)}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
-.about-media{position:relative;height:580px}
+.about-media{position:relative;aspect-ratio:1;height:auto;max-height:580px}
 .about-media-inner{width:100%;height:100%;overflow:hidden;position:relative}
 .about-media-inner img,.about-media-inner video,.about-media-inner iframe{width:100%;height:100%;object-fit:cover;object-fit:cover;object-position:center top}
 .about-media-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--black3);color:rgba(255,255,255,.08);font-size:60px}
@@ -389,7 +389,7 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
       linear-gradient(to bottom, var(--black) 0%, rgba(10,10,10,.7) 30%, rgba(10,10,10,.5) 60%, var(--black) 100%);
   }
   .about-grid,.booking-wrap,.footer-inner{grid-template-columns:1fr;gap:40px}
-  .about-media{height:360px}
+  .about-media{height:auto;max-height:400px}
   .services-grid{grid-template-columns:1fr 1fr}
   .nav-links{display:none}
 }
@@ -719,7 +719,20 @@ function setMediaOptimized(el, url){
     el.src=url; // iframes لا تحتاج تحسين Cloudinary
   }
 }
+// كشف iOS
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+
 function isVideo(u){return u&&(/youtube\.com|youtu\.be|vimeo\.com/i.test(u)||/\.(mp4|webm|ogg|mov)([?#]|$)/i.test(u))}
+
+// WebP متحرك — يعمل على كل شيء عدا iOS
+function isAnimatedWebP(u){return u&&/\.webp([?#]|$)/i.test(u)}
+
+// تحويل Cloudinary WebP إلى MP4 لـ iOS
+function toCloudinaryMp4(u){
+  if(!u||!u.includes('res.cloudinary.com'))return u;
+  return u.replace(/\.webp([?#]|$)/,'.mp4$1');
+}
+
 function buildMedia(url,style){
   if(!url)return null;
   style=style||'width:100%;height:100%;object-fit:cover;object-position:center top';
@@ -727,6 +740,14 @@ function buildMedia(url,style){
   if(yt)return`<iframe src="https://www.youtube.com/embed/${yt[1]}?autoplay=1&mute=1&loop=1&playlist=${yt[1]}&controls=0&rel=0" style="${style};border:none" allow="autoplay" allowfullscreen></iframe>`;
   const vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if(vm)return`<iframe src="https://player.vimeo.com/video/${vm[1]}?autoplay=1&muted=1&loop=1&background=1" style="${style};border:none" allowfullscreen></iframe>`;
+  // WebP متحرك — نستخدم <video> مع مصدرين: MP4 لـ iOS وWebP لأندرويد
+  if(isAnimatedWebP(url)){
+    const mp4Src=toCloudinaryMp4(url);
+    return`<video style="${style}" autoplay muted loop playsinline>
+      <source src="${mp4Src}" type="video/mp4">
+      <source src="${cdnOpt(url)}" type="image/webp">
+    </video>`;
+  }
   if(isVideo(url))return`<video src="${cdnOpt(url)}" style="${style}" autoplay muted loop playsinline></video>`;
   return`<img src="${cdnOpt(url)}" alt="" style="${style}">`;
 }
