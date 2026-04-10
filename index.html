@@ -818,15 +818,26 @@ function buildMedia(url,style,isHero){
   const priority=isHero?' fetchpriority="high" decoding="async"':'';
   const dims=isHero?' width="960" height="1280"':'';
   // صورة Hero: srcset بأحجام Cloudinary مناسبة لكل شاشة
-  if(isHero && cdnOpt(url).includes('res.cloudinary.com')){
-    const base=cdnOpt(url).replace('/upload/f_auto,q_auto/','/upload/f_auto,q_auto,w_');
-    return`<img
-      src="${base}800/${url.split('/upload/')[1]}"
-      srcset="${base}480/${url.split('/upload/')[1]} 480w,
-              ${base}800/${url.split('/upload/')[1]} 800w,
-              ${base}1200/${url.split('/upload/')[1]} 1200w"
-      sizes="(max-width:960px) 100vw, 48vw"
-      alt=""${dims} style="${style}"${priority}>`;
+  if(isHero && url.includes('res.cloudinary.com')){
+    // نبني URL نظيف: /upload/f_auto,q_auto,w_XXX/<public_id>
+    const uploadIdx=url.indexOf('/upload/');
+    if(uploadIdx!==-1){
+      const base=url.slice(0,uploadIdx+8); // "https://res.cloudinary.com/.../image/upload/"
+      // نحذف أي transformations موجودة ونأخذ الـ public_id فقط
+      const rest=url.slice(uploadIdx+8);
+      const publicId=rest.replace(/^(v\d+\/)?([^/]+\/)*([^/]+\/)*/, m =>
+        /^(f_|q_|w_|h_|c_|e_|fl_)/.test(m) ? '' : m
+      );
+      // طريقة أبسط وأموثوق: نقسم على /v ونأخذ الجزء الأخير
+      const vMatch=url.match(/\/upload\/(?:[^/]+\/)*?(v\d+\/.+)$/);
+      const pid=vMatch ? vMatch[1] : rest;
+      const mk=(w)=>`${base}f_auto,q_auto,w_${w}/${pid}`;
+      return`<img
+        src="${mk(800)}"
+        srcset="${mk(480)} 480w, ${mk(800)} 800w, ${mk(1200)} 1200w"
+        sizes="(max-width:960px) 100vw, 48vw"
+        alt=""${dims} style="${style}"${priority}>`;
+    }
   }
   return`<img src="${cdnOpt(url)}" alt=""${dims} style="${style}"${priority}>`;
 }
