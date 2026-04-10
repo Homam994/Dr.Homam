@@ -68,7 +68,13 @@
 <link rel="preconnect" href="https://res.cloudinary.com">
 <link rel="dns-prefetch" href="https://www.google.com">
 <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
-<link id="main-fonts" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+<!-- تحميل الخط بدون حجب الـ render -->
+<link id="main-fonts" rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap"></noscript>
+<style>
+/* fallback فوري حتى يُحمَّل الخط — يمنع FOUT */
+body{font-family:'Almarai','Segoe UI',Tahoma,Arial,sans-serif}
+</style>
 <link rel="preload" as="image" href="https://res.cloudinary.com/dwzew575i/image/upload/f_auto,q_auto/v1773740130/unnamed_u8sguf_mcjawq.jpg" fetchpriority="high">
 <!-- SVG sprite بديل Font Awesome — فقط الأيقونات المستخدمة (~3KB بدل ~500KB) -->
 <style>
@@ -811,6 +817,17 @@ function buildMedia(url,style,isHero){
   if(isVideo(url))return`<video src="${cdnOpt(url)}" style="${style}" autoplay muted loop playsinline></video>`;
   const priority=isHero?' fetchpriority="high" decoding="async"':'';
   const dims=isHero?' width="960" height="1280"':'';
+  // صورة Hero: srcset بأحجام Cloudinary مناسبة لكل شاشة
+  if(isHero && cdnOpt(url).includes('res.cloudinary.com')){
+    const base=cdnOpt(url).replace('/upload/f_auto,q_auto/','/upload/f_auto,q_auto,w_');
+    return`<img
+      src="${base}800/${url.split('/upload/')[1]}"
+      srcset="${base}480/${url.split('/upload/')[1]} 480w,
+              ${base}800/${url.split('/upload/')[1]} 800w,
+              ${base}1200/${url.split('/upload/')[1]} 1200w"
+      sizes="(max-width:960px) 100vw, 48vw"
+      alt=""${dims} style="${style}"${priority}>`;
+  }
   return`<img src="${cdnOpt(url)}" alt=""${dims} style="${style}"${priority}>`;
 }
 
@@ -834,9 +851,18 @@ function applyFonts(){
   const dispUrl  = f.displayUrl||'Almarai:wght@300;400;700;800';
   const bodyUrl  = f.bodyUrl||'Almarai:wght@300;400;700';
 
-  const mainFonts=document.getElementById('main-fonts');
+  // تحديث رابط الخط فقط إذا تغيّر — بدون حجب الـ render
   const newHref=`https://fonts.googleapis.com/css2?family=${dispUrl}&family=${bodyUrl}&display=swap`;
-  if(mainFonts && mainFonts.href!==newHref) mainFonts.href=newHref;
+  const existing=document.getElementById('main-fonts');
+  const currentHref=existing?.getAttribute('data-loaded-href')||'';
+  if(currentHref!==newHref){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=newHref;
+    link.setAttribute('data-loaded-href',newHref);
+    document.head.appendChild(link);
+    if(existing)existing.setAttribute('data-loaded-href',newHref);
+  }
 
   document.documentElement.style.setProperty('--font-display',`'${dispName}', serif`);
   document.documentElement.style.setProperty('--font-body',`'${bodyName}', sans-serif`);
@@ -955,7 +981,10 @@ function renderServices(){
       ${s.img?`<img class="srv-bg" src="${cdnOpt(s.img)}" alt="${s.name}" loading="lazy" style="opacity:1"><div class="srv-bg-grad"></div>`:''}
       <div class="srv-content srv-card-inner">
         <div class="srv-num">0${i+1}</div>
-        <div class="srv-icon"><i class="${s.icon||'fa fa-tooth'}"></i></div>
+        <div class="srv-icon">${s.iconImg
+          ?`<img src="${cdnOpt(s.iconImg)}" alt="${s.name}" width="36" height="36" loading="lazy" style="width:36px;height:36px;object-fit:contain;filter:brightness(0) saturate(100%) invert(73%) sepia(42%) saturate(500%) hue-rotate(5deg) brightness(95%)">`
+          :`<svg class="fa" aria-hidden="true" style="width:22px;height:22px"><use href="#fa-tooth"/></svg>`
+        }</div>
         <div class="srv-name">${s.name}</div>
         <div class="srv-desc">${s.desc}</div>
       </div>

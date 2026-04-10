@@ -509,7 +509,23 @@ input:checked+.tslider:before{transform:translateX(-18px);background:var(--dange
     <div class="overlay-head"><h3 id="srv-modal-t">إضافة خدمة</h3><button class="overlay-close" onclick="closeSrvModal()"><i class="fa fa-times"></i></button></div>
     <div class="overlay-body">
       <input type="hidden" id="s-idx">
-      <div style="margin-bottom:16px"><label class="form-label">أيقونة Font Awesome</label><input type="text" class="form-input" id="s-icon" placeholder="fa fa-tooth" dir="ltr"><p style="font-size:11px;color:var(--muted);margin-top:6px">مثال: fa fa-tooth · fa fa-teeth · fa fa-star</p></div>
+      <div style="margin-bottom:16px">
+        <label class="form-label">أيقونة الخدمة</label>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div id="s-iconimg-prev" style="width:60px;height:60px;border:1px solid var(--border2);background:var(--black2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
+            <img id="s-iconimg-thumb" src="" style="width:40px;height:40px;object-fit:contain;display:none">
+            <i class="fa fa-image" style="color:var(--muted);font-size:20px" id="s-iconimg-ph"></i>
+          </div>
+          <div style="flex:1">
+            <input type="url" class="form-input" id="s-iconimg" placeholder="https://res.cloudinary.com/..." dir="ltr" oninput="previewIconImg()" style="margin-bottom:6px">
+            <button type="button" class="btn btn-outline" style="padding:5px 10px;font-size:11px;width:100%;justify-content:center" onclick="document.getElementById('s-iconimg-file').click()">
+              <i class="fa fa-upload"></i> رفع من الجهاز
+            </button>
+            <input type="file" id="s-iconimg-file" accept="image/*" style="display:none" onchange="uploadIconImg(this)">
+            <p style="font-size:11px;color:var(--muted);margin-top:6px">PNG/SVG شفاف مفضل · 64×64px أو أكبر</p>
+          </div>
+        </div>
+      </div>
       <div style="margin-bottom:16px"><label class="form-label">اسم الخدمة</label><input type="text" class="form-input" id="s-name"></div>
       <div style="margin-bottom:16px"><label class="form-label">الوصف</label><textarea class="form-textarea" id="s-desc" rows="3"></textarea></div>
       <div style="margin-bottom:20px">
@@ -803,26 +819,53 @@ async function saveAbout(){
 function renderSrvList(){
   const list=document.getElementById('srv-list'),svs=DATA?.services||[];
   if(!svs.length){list.innerHTML='<p style="text-align:center;padding:40px;color:var(--muted);font-style:italic">لا توجد خدمات بعد.</p>';return;}
-  list.innerHTML=svs.map((s,i)=>`<div class="list-row"><div class="row-avatar"><i class="${s.icon||'fa fa-tooth'}"></i></div><div class="row-info"><h4>${s.name}</h4><small>${s.desc}</small></div><div class="row-actions"><button class="btn btn-outline" style="padding:7px 12px" onclick="openSrvModal(${i})"><i class="fa fa-pen"></i></button><button class="btn btn-danger" style="padding:7px 12px" onclick="delSrv(${i})"><i class="fa fa-trash"></i></button></div></div>`).join('');
+  list.innerHTML=svs.map((s,i)=>`<div class="list-row"><div class="row-avatar" style="overflow:hidden;background:var(--black3)">${s.iconImg?`<img src="${s.iconImg}" style="width:32px;height:32px;object-fit:contain">`:`<i class="fa fa-image" style="color:var(--muted)"></i>`}</div><div class="row-info"><h4>${s.name}</h4><small>${s.desc}</small></div><div class="row-actions"><button class="btn btn-outline" style="padding:7px 12px" onclick="openSrvModal(${i})"><i class="fa fa-pen"></i></button><button class="btn btn-danger" style="padding:7px 12px" onclick="delSrv(${i})"><i class="fa fa-trash"></i></button></div></div>`).join('');
 }
 function openSrvModal(idx){
   document.getElementById('srv-modal').classList.add('open');
   document.getElementById('s-img-prev').style.display='none';
+  document.getElementById('s-iconimg-thumb').style.display='none';
+  document.getElementById('s-iconimg-ph').style.display='';
   if(idx!==undefined){
     const s=DATA.services[idx];
     document.getElementById('srv-modal-t').textContent='تعديل الخدمة';
     document.getElementById('s-idx').value=idx;
-    document.getElementById('s-icon').value=s.icon||'';
+    document.getElementById('s-iconimg').value=s.iconImg||'';
     document.getElementById('s-name').value=s.name;
     document.getElementById('s-desc').value=s.desc;
     document.getElementById('s-img').value=s.img||'';
+    if(s.iconImg){
+      document.getElementById('s-iconimg-thumb').src=s.iconImg;
+      document.getElementById('s-iconimg-thumb').style.display='block';
+      document.getElementById('s-iconimg-ph').style.display='none';
+    }
     if(s.img){document.getElementById('s-img-thumb').src=s.img;document.getElementById('s-img-prev').style.display='block';}
   }else{
     document.getElementById('srv-modal-t').textContent='إضافة خدمة';
-    ['s-idx','s-icon','s-name','s-desc','s-img'].forEach(id=>document.getElementById(id).value='');
+    ['s-idx','s-iconimg','s-name','s-desc','s-img'].forEach(id=>document.getElementById(id).value='');
   }
 }
 function closeSrvModal(){document.getElementById('srv-modal').classList.remove('open');}
+function previewIconImg(){
+  const url=document.getElementById('s-iconimg').value.trim();
+  const thumb=document.getElementById('s-iconimg-thumb');
+  const ph=document.getElementById('s-iconimg-ph');
+  if(url){thumb.src=url;thumb.style.display='block';ph.style.display='none';}
+  else{thumb.style.display='none';ph.style.display='';}
+}
+async function uploadIconImg(input){
+  const file=input.files[0];if(!file)return;
+  const CLOUD='dwzew575i';
+  const fd=new FormData();fd.append('file',file);fd.append('upload_preset','ml_default');
+  try{
+    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:fd});
+    const j=await r.json();
+    if(j.secure_url){
+      document.getElementById('s-iconimg').value=j.secure_url;
+      previewIconImg();
+    }
+  }catch(e){alert('فشل الرفع — ضع الرابط يدوياً');}
+}
 function previewSrvImg(){
   const url=document.getElementById('s-img').value.trim();
   const prev=document.getElementById('s-img-prev');
@@ -833,7 +876,7 @@ function previewSrvImg(){
 async function saveSrv(){
   const idx=document.getElementById('s-idx').value;
   const s={
-    icon:document.getElementById('s-icon').value,
+    iconImg:document.getElementById('s-iconimg').value.trim(),
     name:document.getElementById('s-name').value,
     desc:document.getElementById('s-desc').value,
     img:document.getElementById('s-img').value.trim()
