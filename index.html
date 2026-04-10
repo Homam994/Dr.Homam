@@ -63,8 +63,13 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://zvoxfqzbfehmkvbepokb.supabase.co">
+<link rel="preconnect" href="https://res.cloudinary.com">
+<link rel="dns-prefetch" href="https://www.google.com">
 <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+<link id="main-fonts" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="https://res.cloudinary.com/dwzew575i/image/upload/f_auto,q_auto/v1773740130/unnamed_u8sguf_mcjawq.jpg" fetchpriority="high">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
@@ -733,7 +738,7 @@ function toCloudinaryMp4(u){
   return u.replace(/\.webp([?#]|$)/,'.mp4$1');
 }
 
-function buildMedia(url,style){
+function buildMedia(url,style,isHero){
   if(!url)return null;
   style=style||'width:100%;height:100%;object-fit:cover;object-position:center top';
   const yt=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
@@ -749,7 +754,9 @@ function buildMedia(url,style){
     </video>`;
   }
   if(isVideo(url))return`<video src="${cdnOpt(url)}" style="${style}" autoplay muted loop playsinline></video>`;
-  return`<img src="${cdnOpt(url)}" alt="" style="${style}">`;
+  const priority=isHero?' fetchpriority="high" decoding="async"':'';
+  const dims=isHero?' width="960" height="1280"':'';
+  return`<img src="${cdnOpt(url)}" alt=""${dims} style="${style}"${priority}>`;
 }
 
 function toggleMenu(){
@@ -772,23 +779,34 @@ function applyFonts(){
   const dispUrl  = f.displayUrl||'Almarai:wght@300;400;700;800';
   const bodyUrl  = f.bodyUrl||'Almarai:wght@300;400;700';
 
-  // تحميل الخطوط ديناميكياً
-  const linkId='dynamic-fonts';
-  let link=document.getElementById(linkId);
-  if(!link){link=document.createElement('link');link.id=linkId;link.rel='stylesheet';document.head.appendChild(link);}
-  link.href=`https://fonts.googleapis.com/css2?family=${dispUrl}&family=${bodyUrl}&display=swap`;
+  const mainFonts=document.getElementById('main-fonts');
+  const newHref=`https://fonts.googleapis.com/css2?family=${dispUrl}&family=${bodyUrl}&display=swap`;
+  if(mainFonts && mainFonts.href!==newHref) mainFonts.href=newHref;
 
-  // تطبيق على المتغيرات
   document.documentElement.style.setProperty('--font-display',`'${dispName}', serif`);
   document.documentElement.style.setProperty('--font-body',`'${bodyName}', sans-serif`);
 }
 
 async function boot(){
-  D=await DB.read();
+  // ① عرض DEFAULTS فوراً — الصفحة تظهر بدون انتظار Supabase
+  D=JSON.parse(JSON.stringify(DB.DEFAULTS));
   applyFonts();
   applyAll();
   document.getElementById('loader').classList.add('out');
-  initScroll(); initReveal();
+  initScroll();
+  initReveal(); // يُسجّل العناصر الحالية
+
+  // ② جلب Supabase في الخلفية
+  try{
+    const live=await DB.read();
+    const snapshot=JSON.stringify(D);
+    D=live;
+    if(JSON.stringify(live)!==snapshot){
+      applyFonts();
+      applyAll();
+      initReveal(); // يُسجّل العناصر الجديدة بعد التحديث
+    }
+  }catch(e){ /* DEFAULTS كافية */ }
 }
 
 function applyAll(){
@@ -807,7 +825,7 @@ function applyAll(){
   set('stat2-num',h.stat2Num); set('stat2-label',h.stat2Label);
   set('stat3-num',h.stat3Num); set('stat3-label',h.stat3Label);
   const hWrap=document.getElementById('hero-media-wrap');
-  if(h.heroMedia&&hWrap){const html=buildMedia(h.heroMedia);if(html)hWrap.innerHTML=html;}
+  if(h.heroMedia&&hWrap){const html=buildMedia(h.heroMedia,null,true);if(html)hWrap.innerHTML=html;}
 
   /* about */
   set('about-title1',a.title1); set('about-title2',a.title2);
@@ -1054,9 +1072,12 @@ function initScroll(){
 }
 
 /* Reveal */
+const _revealObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');_revealObs.unobserve(x.target);}}),{threshold:.12});
 function initReveal(){
-  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target)}}),{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  document.querySelectorAll('.reveal:not(.visible):not([data-observed])').forEach(el=>{
+    el.setAttribute('data-observed','1');
+    _revealObs.observe(el);
+  });
 }
 
 /* ── BOOKING ── */
