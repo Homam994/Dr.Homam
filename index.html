@@ -541,7 +541,7 @@ footer{background:var(--black);padding:60px 5% 30px;border-top:1px solid var(--b
     <p class="hero-desc" id="hero-desc">أقدّم لك رعاية تقويمية متخصصة تجمع بين الدقة العلمية والحس الجمالي، لأمنحك الابتسامة التي تستحقها.</p>
     <div class="hero-ctas">
       <button class="btn-primary" onclick="openBooking()"><i class="fa fa-calendar-check"></i><span id="hero-btn1">احجز موعدك</span></button>
-      <a href="#about" class="btn-secondary"><span id="hero-btn2">اعرف أكثر</span><i class="fa fa-arrow-left"></i></a>
+      <a href="tel:" id="hero-btn2-link" class="btn-secondary"><span id="hero-btn2">📞 اتصل بنا</span></a>
     </div>
     <div class="hero-stats">
       <div><div class="hero-stat-num" id="stat1-num">+1000</div><div class="hero-stat-label" id="stat1-label">حالة ناجحة</div></div>
@@ -915,6 +915,8 @@ function applyAll(){
   set('hero-badge',h.badge); set('hero-name-line',h.nameDisplay||i.name);
   set('hero-tagline',h.tagline); set('hero-sub-title',h.subTitle);
   set('hero-desc',h.desc); set('hero-btn1',h.btn1); set('hero-btn2',h.btn2);
+  const heroCallLink=document.getElementById('hero-btn2-link');
+  if(heroCallLink&&i.phone)heroCallLink.href='tel:'+i.phone.replace(/\s/g,'');
   set('stat1-num',h.stat1Num); set('stat1-label',h.stat1Label);
   set('stat2-num',h.stat2Num); set('stat2-label',h.stat2Label);
   set('stat3-num',h.stat3Num); set('stat3-label',h.stat3Label);
