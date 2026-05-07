@@ -27,9 +27,9 @@ const DB = (() => {
     "nameDisplay": "د. محمد همام",
     "tagline": "السمان",
     "subTitle": "ماجستير سريري في تقويم الأسنان والفكين",
-    "desc": "أعمل حاليًا في عيادات هارموني سمايل في مدينة بريدة بالمملكة العربية السعودية",
+    "desc": "أعمل حاليًا في عيادات هارموني سمايل في مدينة بريدة بالمملكة العربية السعودية.",
     "btn1": "احجز موعدك",
-    "btn2": "اعرف أكثر",
+    "btn2": "اتصل بنا  📞",
     "heroMedia": "https://res.cloudinary.com/dwzew575i/image/upload/v1773740130/unnamed_u8sguf_mcjawq.jpg",
     "stat1Num": "+500",
     "stat1Label": "حالة ناجحة",
@@ -39,7 +39,7 @@ const DB = (() => {
     "stat3Label": "تقييم المرضى"
   },
   "about": {
-    "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1773741325/03151-ezgif.com-video-to-webp-converter_omtnsp.webp",
+    "img": "https://res.cloudinary.com/dwzew575i/video/upload/v1775243012/0315_1_brp5g9.mp4",
     "tag": "عيادات هارموني سمايل",
     "lead": "أؤمن بأن كل ابتسامة قصة فريدة تستحق اهتماماً استثنائياً.",
     "cred1": "الماجستير السريري في تقويم الأسنان",
@@ -60,9 +60,9 @@ const DB = (() => {
   "doctors": [
     {
       "id": 1,
-      "name": "د. محمدهمام السمان",
-      "specialty": "تقويم الأسنان والفكين",
       "img": "",
+      "name": "د. محمدهمام السمان",
+      "endTime": "21:30",
       "workDays": [
         0,
         1,
@@ -71,41 +71,47 @@ const DB = (() => {
         4,
         6
       ],
+      "specialty": "تقويم الأسنان والفكين",
       "startTime": "13:30",
-      "endTime": "21:30",
       "slotDuration": 30
     }
   ],
   "services": [
     {
+      "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1774643733/1_zer8ip.jpg",
       "desc": "الخيار الكلاسيكي الفعّال لتصحيح جميع حالات اعوجاج الأسنان بدقة عالية.",
-      "icon": "fa fa-teeth",
-      "name": "تقويم معدني"
+      "name": "التقويم الثابت",
+      "iconImg": "https://res.cloudinary.com/dwzew575i/image/upload/v1775851986/1_ttnpna.png"
     },
     {
+      "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1774643733/2_dfiac0.jpg",
       "desc": "قوالب شفافة مريحة وغير مرئية لنمط حياة متطلب.",
-      "icon": "fa fa-tooth",
-      "name": "التقويم الشفاف"
+      "name": "التقويم الشفاف",
+      "iconImg": "https://res.cloudinary.com/dwzew575i/image/upload/v1775851986/2_kimbly.png"
     },
     {
+      "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1774643733/3_skcoxp.jpg",
       "desc": "تعديل نمو الفك المتقدم أو المتأخر",
-      "icon": "fa fa-child",
-      "name": "الأجهزة الوظيفية للأطفال"
+      "name": "الأجهزة الوظيفية للأطفال",
+      "iconImg": "https://res.cloudinary.com/dwzew575i/image/upload/v1775851986/3_womdfh.png"
     },
     {
+      "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1774643733/4_pgpl4i.jpg",
       "desc": "رعاية مبكرة توجّه نمو الفك والأسنان في المرحلة الحيوية.",
-      "icon": "fa fa-star",
-      "name": "الكشف المبكر"
+      "name": "الكشف المبكر",
+      "iconImg": "https://res.cloudinary.com/dwzew575i/image/upload/v1775851986/4_dbw2yz.png"
     },
     {
+      "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1774643733/5_obtz4j.jpg",
       "desc": "حلول ثابتة ومتحركة تحافظ على نتائج علاجك.",
-      "icon": "fa fa-face-smile",
-      "name": "المثبتات التقويمية"
+      "name": "المثبتات التقويمية",
+      "iconImg": "https://res.cloudinary.com/dwzew575i/image/upload/v1775851986/5_obgl8i.png"
     },
     {
+      "img": "https://res.cloudinary.com/dwzew575i/image/upload/v1774643733/6_f7mfp5.jpg",
       "desc": "رؤية واضحة قبل بدء العلاج — نمذجة رقمية دقيقة.",
-      "icon": "fa fa-microscope",
-      "name": "التخطيط الرقمي ثلاثي الأبعاد"
+      "name": "التخطيط الرقمي ثلاثي الأبعاد",
+      "iconImg": "https://res.cloudinary.com/dwzew575i/image/upload/v1775851986/6_ac3byk.png"
     }
   ],
   "gallery": [
@@ -115,14 +121,14 @@ const DB = (() => {
       "before": "https://res.cloudinary.com/dwzew575i/image/upload/v1773524551/WhatsApp_Image_2026-03-15_at_12.39.34_AM_-_Copy_ecvjsw.jpg"
     },
     {
-      "after": "https://res.cloudinary.com/dwzew575i/image/upload/v1773524551/WhatsApp_Image_2026-03-15_at_12.39.48_AM_gg9dky.jpg",
+      "after": "https://res.cloudinary.com/dwzew575i/image/upload/v1774644326/DSC_0648_vy9x5f.jpg",
       "label": "حالة تراجع أسنان أمامية",
-      "before": "https://res.cloudinary.com/dwzew575i/image/upload/v1773524551/WhatsApp_Image_2026-03-15_at_12.39.48_AM_-_Copy_ywhkba.jpg"
+      "before": "https://res.cloudinary.com/dwzew575i/image/upload/v1774644326/DSC_0120_Right_aozupp.jpg"
     },
     {
-      "after": "https://res.cloudinary.com/dwzew575i/image/upload/v1773524551/WhatsApp_Image_2026-03-15_at_12.40.11_AM_be6i8a.jpg",
+      "after": "https://res.cloudinary.com/dwzew575i/image/upload/v1774644326/DSC_0932_thawf1.jpg",
       "label": "حالة بروز أسنان أمامية",
-      "before": "https://res.cloudinary.com/dwzew575i/image/upload/v1773524552/WhatsApp_Image_2026-03-15_at_12.40.11_AM_-_Copy_ovyvje.jpg"
+      "before": "https://res.cloudinary.com/dwzew575i/image/upload/v1774644326/IMG_2977_Rt_occ_v8fu8x.jpg"
     }
   ],
   "reviews": [
@@ -154,38 +160,38 @@ const DB = (() => {
   "hoursOverride": [
     {
       "day": "الأحد",
-      "closed": false,
-      "time": "13:30 - 21:30"
+      "time": "13:30 - 21:30",
+      "closed": false
     },
     {
       "day": "الاثنين",
-      "closed": false,
-      "time": "13:30 - 21:30"
+      "time": "13:30 - 21:30",
+      "closed": false
     },
     {
       "day": "الثلاثاء",
-      "closed": false,
-      "time": "13:30 - 21:30"
+      "time": "13:30 - 21:30",
+      "closed": false
     },
     {
       "day": "الأربعاء",
-      "closed": false,
-      "time": "13:30 - 21:30"
+      "time": "13:30 - 21:30",
+      "closed": false
     },
     {
       "day": "الخميس",
-      "closed": false,
-      "time": "12:00 - 20:00"
+      "time": "12:00 - 20:00",
+      "closed": false
     },
     {
       "day": "الجمعة",
-      "closed": true,
-      "time": "09:00 - 13:00"
+      "time": "09:00 - 13:00",
+      "closed": true
     },
     {
       "day": "السبت",
-      "closed": false,
-      "time": "13:30 - 21:30"
+      "time": "13:30 - 21:30",
+      "closed": false
     }
   ],
   "fonts": {
