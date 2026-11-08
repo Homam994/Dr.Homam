@@ -17,7 +17,7 @@ const DB = (() => {
     "email": "homam.alsmman@gmail.com",
     "contactDesc": "يسعدني الإجابة على استفساراتك وحجز موعدك في أقرب وقت.",
     "about1": "أقدّم لك رعاية تقويمية متخصصة تجمع بين الدقة العلمية والحس الجمالي.",
-    "about2": "حاصل على الماجستير السريري في تقويم الأسنان مع خبرة تمتد لأكثر من 6 سنوات.",
+    "about2": "حاصل على الماجستير السريري في تقويم الأسنان مع خبرة تمتد لأكثر من 7 سنوات.",
     "footerDesc": "ابتسامتك هي انعكاس لثقتك , أنا هنا لأجعلها تتألق.",
     "logoUrl": "https://res.cloudinary.com/dwzew575i/image/upload/v1773612769/oie_iBTOJqT6Lic2_wqfx5q.png",
     "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3573.87684397454!2d43.92051649999999!3d26.3951662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x157f57a2469f82ef%3A0x2803b38178f00625!2zSGFybW9ueSBzbWlsZSBjbGluaWNzINi52YrYp9iv2KfYqiDZh9in2LHZhdmI2YbZiiDYs9mF2KfZitmEINmD2YTZitmG2YrZgw!5e0!3m2!1sar!2ssa!4v1773538782924!5m2!1sar!2ssa"
@@ -33,7 +33,7 @@ const DB = (() => {
     "heroMedia": "https://res.cloudinary.com/dwzew575i/image/upload/v1773740130/unnamed_u8sguf_mcjawq.jpg",
     "stat1Num": "+500",
     "stat1Label": "حالة ناجحة",
-    "stat2Num": "+6",
+    "stat2Num": "+7",
     "stat2Label": "سنوات خبرة",
     "stat3Num": "4.6",
     "stat3Label": "تقييم المرضى"
@@ -67,9 +67,7 @@ const DB = (() => {
         0,
         1,
         2,
-        3,
-        4,
-        6
+        4
       ],
       "specialty": "تقويم الأسنان والفكين",
       "startTime": "13:30",
@@ -176,7 +174,7 @@ const DB = (() => {
     {
       "day": "الأربعاء",
       "time": "13:30 - 21:30",
-      "closed": false
+      "closed": true
     },
     {
       "day": "الخميس",
@@ -191,7 +189,7 @@ const DB = (() => {
     {
       "day": "السبت",
       "time": "13:30 - 21:30",
-      "closed": false
+      "closed": true
     }
   ],
   "fonts": {
